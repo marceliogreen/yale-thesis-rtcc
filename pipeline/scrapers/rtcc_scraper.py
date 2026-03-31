@@ -9,8 +9,6 @@ Data Sources:
 - National news trend pieces
 - Vendor announcements (Motorola, ShotSpotter, Flock Safety, etc.)
 - City council minutes
-
-Author: Marcelo Green <marcelo.green@yale.edu>
 """
 
 import asyncio
@@ -188,12 +186,14 @@ class RTCCScraper:
         self.cache_dir = Path(cache_dir)
         self.cache_dir.mkdir(parents=True, exist_ok=True)
 
-        # User agent
+        # User agent (required via environment variable for personal accountability)
         if user_agent is None:
-            user_agent = os.getenv(
-                "SCRAPER_USER_AGENT",
-                "RTCC_Thesis_Research/1.0 (marcelo.green@yale.edu)",
-            )
+            user_agent = os.getenv("SCRAPER_USER_AGENT")
+            if not user_agent:
+                raise ValueError(
+                    "SCRAPER_USER_AGENT environment variable required. "
+                    "Add to .env: SCRAPER_USER_AGENT='Your User-Agent String'"
+                )
         self.user_agent = user_agent
         self.min_delay = min_delay
 
