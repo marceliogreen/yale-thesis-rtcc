@@ -1,0 +1,9 @@
+city,rtcc_year,known_articles,search_terms,sources
+Hartford,2016,1,4,"Hartford Courant, Hartford PD, CT Mirror, WNPR"
+Miami,2016,1,4,"Miami Herald, City of Miami, Miami PD, WPLG Local 10"
+St. Louis,2015,1,4,"St. Louis Post-Dispatch, SLMPD, St. Louis Public Radio, KMOV"
+Newark,2018,1,4,"Newark Star-Ledger, Newark PD, NJ.com, WBGO"
+New Orleans,2017,1,4,"Times-Picayune, NOLA.com, NOPD, WWL-TV"
+Albuquerque,2020,1,4,"Albuquerque Journal, APD, KRQE, KOB"
+Fresno,2018,1,4,"Fresno Bee, Fresno PD, ABC30, GV Wire"
+Chicago,2017,1,5,"Chicago Tribune, Chicago Sun-Times, CPD, WGN"

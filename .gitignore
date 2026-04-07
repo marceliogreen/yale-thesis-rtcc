@@ -23,11 +23,12 @@ ENV/
 .DS_Store
 Thumbs.db
 
-# Data and results (large files)
-results/*.png
-results/*.csv
-results/*.parquet
+# Data and results (large files - but track analysis outputs)
+# results/*.png
+# results/*.csv
+# results/*.parquet
 pipeline/data/cache/
+data/cache/
 
 # Jupyter
 .ipynb_checkpoints/
@@ -37,3 +38,4 @@ pipeline/data/cache/
 htmlcov/
 .coverage
 .pytest_cache/
+.osgrep
