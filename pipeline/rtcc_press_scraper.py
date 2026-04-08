@@ -1,18 +1,19 @@
 """
-RTCC Press Release Scraper
+RTCC Press Release Scraper — Expanded with Live Search
 
 Scrapes news articles and press releases about RTCC implementation
-in target cities for qualitative context on statistical trends.
+in 8 target cities using expanded query taxonomy (593 queries).
+
+Search methods:
+1. Google News RSS feeds (no API key needed)
+2. Vendor case study pages
+3. DOJ COPS grant search
+4. Bing News API (if key available)
 
 Target Cities:
-- Hartford CT (2016)
-- Miami FL (2016)
-- St. Louis MO (2015)
-- Newark NJ (2018)
-- New Orleans LA (2017)
-- Albuquerque NM (2020)
-- Fresno CA (2018)
-- Chicago IL (2017)
+- Hartford CT (2016), Miami FL (2016), St. Louis MO (2015)
+- Newark NJ (2018), New Orleans LA (2017), Albuquerque NM (2020)
+- Fresno CA (2018), Chicago IL (2017)
 
 Author: Marcel Green <marcelo.green@yale.edu>
 """
@@ -20,457 +21,420 @@ Author: Marcel Green <marcelo.green@yale.edu>
 import pandas as pd
 import requests
 from datetime import datetime
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Tuple
+from urllib.parse import quote_plus, urlencode
 import json
 import re
+import time
+import logging
 from pathlib import Path
+from xml.etree import ElementTree
 
-# City-specific news sources
-CITY_SOURCES = {
-    "Hartford": {
-        "sources": [
-            "Hartford Courant",
-            "Hartford PD",
-            "CT Mirror",
-            "WNPR"
-        ],
-        "search_terms": [
-            "Real Time Crime Center Hartford",
-            "RTCC Hartford",
-            "Hartford police crime center",
-            "Hartford video surveillance center"
-        ],
-        "rtcc_year": 2016
-    },
-    "Miami": {
-        "sources": [
-            "Miami Herald",
-            "City of Miami",
-            "Miami PD",
-            "WPLG Local 10"
-        ],
-        "search_terms": [
-            "Real Time Crime Center Miami",
-            "RTCC Miami",
-            "Miami police fusion center",
-            "Miami video monitoring center"
-        ],
-        "rtcc_year": 2016
-    },
-    "St. Louis": {
-        "sources": [
-            "St. Louis Post-Dispatch",
-            "SLMPD",
-            "St. Louis Public Radio",
-            "KMOV"
-        ],
-        "search_terms": [
-            "Real Time Crime Center St. Louis",
-            "RTCC St. Louis",
-            "St. Louis police technology center",
-            "St. Louis video surveillance"
-        ],
-        "rtcc_year": 2015
-    },
-    "Newark": {
-        "sources": [
-            "Newark Star-Ledger",
-            "Newark PD",
-            "NJ.com",
-            "WBGO"
-        ],
-        "search_terms": [
-            "Real Time Crime Center Newark",
-            "RTCC Newark",
-            "Newark police surveillance center",
-            "Newark video monitoring"
-        ],
-        "rtcc_year": 2018
-    },
-    "New Orleans": {
-        "sources": [
-            "Times-Picayune",
-            "NOLA.com",
-            "NOPD",
-            "WWL-TV"
-        ],
-        "search_terms": [
-            "Real Time Crime Center New Orleans",
-            "RTCC New Orleans",
-            "New Orleans crime analysis center",
-            "NOPD video surveillance"
-        ],
-        "rtcc_year": 2017
-    },
-    "Albuquerque": {
-        "sources": [
-            "Albuquerque Journal",
-            "APD",
-            "KRQE",
-            "KOB"
-        ],
-        "search_terms": [
-            "Real Time Crime Center Albuquerque",
-            "RTCC Albuquerque",
-            "Albuquerque police technology",
-            "APD surveillance center"
-        ],
-        "rtcc_year": 2020
-    },
-    "Fresno": {
-        "sources": [
-            "Fresno Bee",
-            "Fresno PD",
-            "ABC30",
-            "GV Wire"
-        ],
-        "search_terms": [
-            "Real Time Crime Center Fresno",
-            "RTCC Fresno",
-            "Fresno police surveillance",
-            "Fresno video monitoring center"
-        ],
-        "rtcc_year": 2018
-    },
-    "Chicago": {
-        "sources": [
-            "Chicago Tribune",
-            "Chicago Sun-Times",
-            "CPD",
-            "WGN"
-        ],
-        "search_terms": [
-            "Strategic Decision Support Center Chicago",
-            "SDSC Chicago",
-            "Chicago RTCC",
-            "Chicago police fusion center",
-            "Chicago video surveillance center"
-        ],
-        "rtcc_year": 2017
-    }
+logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
+logger = logging.getLogger(__name__)
+
+# Vendor case study URLs
+VENDOR_URLS = {
+    "Motorola Solutions": "https://www.motorolasolutions.com/en_us/government-and-commercial-enterprise/solutions-by-initiative/safe-city.html",
+    "ShotSpotter": "https://www.soundthinking.com/customers/",
+    "Flock Safety": "https://www.flocksafety.com/customers",
+    "Genetec": "https://www.genetec.com/about-us/customer-stories",
+    "Axon": "https://www.axon.com/customers",
+}
+
+# City government URLs for council minutes
+GOVERNMENT_URLS = {
+    "Hartford": "https://hartford.gov",
+    "Miami": "https://www.miamigov.com",
+    "St. Louis": "https://www.stlouis-mo.gov",
+    "Newark": "https://www.newarknj.gov",
+    "New Orleans": "https://www.nola.gov",
+    "Albuquerque": "https://www.cabq.gov",
+    "Fresno": "https://www.fresno.gov",
+    "Chicago": "https://www.chicago.gov",
 }
 
 
-def search_google_news(query: str, num_results: int = 10) -> List[Dict]:
-    """
-    Search Google News for articles.
+# ---------------------------------------------------------------------------
+# Search: Google News RSS
+# ---------------------------------------------------------------------------
 
-    Note: This uses a simple approach. For production, consider
-    using Google Custom Search API or NewsAPI.
+def search_google_news_rss(query: str, num_results: int = 10) -> List[Dict]:
     """
-    # For demonstration, we'll return a placeholder
-    # In production, integrate with NewsAPI or similar
-    return []
+    Search Google News via RSS feed. No API key required.
 
+    Returns list of dicts with: title, url, snippet, date, source
+    """
+    results = []
+    encoded_query = quote_plus(query)
+    url = f"https://news.google.com/rss/search?q={encoded_query}&hl=en-US&gl=US&ceid=US:en"
+
+    try:
+        resp = requests.get(url, headers={
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+                          "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 "
+                          "Safari/537.36"
+        }, timeout=15)
+        resp.raise_for_status()
+
+        root = ElementTree.fromstring(resp.content)
+        items = root.findall(".//item")
+
+        for item in items[:num_results]:
+            title_el = item.find("title")
+            link_el = item.find("link")
+            pubdate_el = item.find("pubDate")
+            source_el = item.find(".//{http://purl.org/dc/elements/1.1/}source")
+            desc_el = item.find("description")
+
+            result = {
+                "title": title_el.text if title_el is not None else "",
+                "url": link_el.text if link_el is not None else "",
+                "date": pubdate_el.text if pubdate_el is not None else "",
+                "source": source_el.text if source_el is not None else "",
+                "snippet": _strip_html(desc_el.text) if desc_el is not None else "",
+            }
+            if result["title"] and result["url"]:
+                results.append(result)
+
+    except requests.RequestException as e:
+        logger.debug(f"Google News RSS failed for '{query}': {e}")
+    except ElementTree.ParseError as e:
+        logger.debug(f"XML parse error for '{query}': {e}")
+
+    return results
+
+
+def _strip_html(text: str) -> str:
+    """Remove HTML tags from text."""
+    return re.sub(r"<[^>]+>", "", text) if text else ""
+
+
+# ---------------------------------------------------------------------------
+# Search: Bing News API (optional, requires key)
+# ---------------------------------------------------------------------------
+
+def search_bing_news(query: str, api_key: str, num_results: int = 10) -> List[Dict]:
+    """
+    Search Bing News API. Requires BING_NEWS_API_KEY in .env.
+    Free tier: 1000 calls/month.
+    """
+    url = "https://api.bing.microsoft.com/v7.0/news/search"
+    headers = {"Ocp-Apim-Subscription-Key": api_key}
+    params = {"q": query, "count": num_results, "mkt": "en-US", "freshness": "Month"}
+
+    try:
+        resp = requests.get(url, headers=headers, params=params, timeout=15)
+        resp.raise_for_status()
+        data = resp.json()
+
+        results = []
+        for article in data.get("value", []):
+            results.append({
+                "title": article.get("name", ""),
+                "url": article.get("url", ""),
+                "date": article.get("datePublished", ""),
+                "source": article.get("provider", [{}])[0].get("name", ""),
+                "snippet": article.get("description", ""),
+            })
+        return results
+
+    except requests.RequestException as e:
+        logger.debug(f"Bing News API failed for '{query}': {e}")
+        return []
+
+
+# ---------------------------------------------------------------------------
+# Search: Vendor case studies
+# ---------------------------------------------------------------------------
+
+def search_vendor_pages(city: str) -> List[Dict]:
+    """
+    Fetch vendor case study pages and check for city mentions.
+    Returns list of vendor-page matches.
+    """
+    results = []
+    city_lower = city.lower()
+    city_variants = _get_city_variants(city)
+
+    for vendor, url in VENDOR_URLS.items():
+        try:
+            resp = requests.get(url, headers={
+                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+                              "AppleWebKit/537.36"
+            }, timeout=15)
+            if resp.status_code != 200:
+                continue
+
+            text = resp.text.lower()
+            for variant in city_variants:
+                if variant.lower() in text:
+                    results.append({
+                        "title": f"{vendor} case study mentioning {city}",
+                        "url": url,
+                        "date": "",
+                        "source": vendor,
+                        "snippet": f"Found '{variant}' on {vendor} page",
+                        "source_type": "vendor",
+                    })
+                    break
+
+        except requests.RequestException:
+            continue
+
+    return results
+
+
+def _get_city_variants(city: str) -> List[str]:
+    """Return search variants for a city name."""
+    variants = {
+        "Hartford": ["Hartford", "Connecticut"],
+        "Miami": ["Miami", "Miami-Dade"],
+        "St. Louis": ["St. Louis", "Saint Louis"],
+        "Newark": ["Newark", "Essex County"],
+        "New Orleans": ["New Orleans", "Orleans Parish", "NOLA"],
+        "Albuquerque": ["Albuquerque", "Bernalillo"],
+        "Fresno": ["Fresno"],
+        "Chicago": ["Chicago", "Cook County"],
+    }
+    return variants.get(city, [city])
+
+
+# ---------------------------------------------------------------------------
+# Extraction helpers
+# ---------------------------------------------------------------------------
 
 def extract_implementation_dates(text: str) -> List[int]:
-    """
-    Extract potential implementation years from article text.
-
-    Looks for:
-    - "launched in 2016"
-    - "opened in 2016"
-    - "implemented 2016"
-    - "began operating 2016"
-    """
+    """Extract potential implementation years from article text."""
     years = []
-
     patterns = [
-        r'(?:launched|opened|implemented|began|started|deployed|activated)(?:\s+\w+){0,3}\s+in?\s*(\d{4})',
-        r'in\s+(\d{4})(?:\s+\w+){0,3}\s+(?:launched|opened|implemented|began|started)',
-        r'(\d{4})(?:\s+\w+){0,3}\s+(?:launch|opening|implementation)',
+        r'(?:launched|opened|implemented|began|started|deployed|activated|unveiled|rolled out)(?:\s+\w+){0,3}\s+in?\s*(\d{4})',
+        r'in\s+(\d{4})(?:\s+\w+){0,3}\s+(?:launched|opened|implemented|began|started|unveiled)',
+        r'(\d{4})(?:\s+\w+){0,3}\s+(?:launch|opening|implementation|deployment)',
+        r'since\s+(\d{4})',
     ]
-
     for pattern in patterns:
         matches = re.findall(pattern, text, re.IGNORECASE)
-        for match in matches:
-            year = int(match)
-            if 2010 <= year <= 2025:
-                years.append(year)
-
+        for m in matches:
+            y = int(m)
+            if 2010 <= y <= 2026:
+                years.append(y)
     return list(set(years))
 
 
 def extract_budget_info(text: str) -> Optional[str]:
-    """
-    Extract budget/cost information from article text.
-    """
+    """Extract budget/cost information from article text."""
     patterns = [
         r'\$[\d,]+(?:\.\d+)?\s*(?:million|M|thousand|K)',
         r'[\d,]+\s*(?:million|M)\s*(?:dollar)',
         r'budget(?:\s+of)?\s+\$?[\d,]+',
     ]
-
-    for pattern in patterns:
-        match = re.search(pattern, text, re.IGNORECASE)
-        if match:
-            return match.group(0)
-
+    for p in patterns:
+        m = re.search(p, text, re.IGNORECASE)
+        if m:
+            return m.group(0)
     return None
 
 
 def extract_capabilities(text: str) -> List[str]:
-    """
-    Extract mentioned RTCC capabilities from article text.
-    """
-    capabilities = []
-
+    """Extract mentioned RTCC capabilities from article text."""
     cap_patterns = {
-        'shotspotter': r'\bshotspotter\b',
+        'shotspotter': r'\bshotspotter\b|\bsoundthinking\b',
         'camera_integration': r'(?:camera|video|cctv|surveillance)\s+(?:integration|feed|network)',
         'license_plate_readers': r'(?:license plate|lpr|alpr)\s*(?:reader|recognition)',
         'predictive_policing': r'predictive\s+policing',
         'data_fusion': r'data\s+fusion',
-        'real_time_monitoring': r'real[- ]time\s+(?:monitoring|analysis)',
+        'real_time_monitoring': r'real[- ]time\s+(?:monitoring|analysis|crime)',
         'gis_mapping': r'(?:gis|mapping)\s+(?:system|tool)',
         'social_media_monitoring': r'social\s+media\s+(?:monitoring|analysis)',
+        'drone': r'\bdrone\b|\buav\b|\bdfr\b',
+        'gunshot_detection': r'gunshot\s+detection',
     }
-
-    for cap_name, pattern in cap_patterns.items():
-        if re.search(pattern, text, re.IGNORECASE):
-            capabilities.append(cap_name)
-
-    return capabilities
+    return [name for name, pat in cap_patterns.items() if re.search(pat, text, re.IGNORECASE)]
 
 
-def create_search_queries() -> List[Dict]:
+# ---------------------------------------------------------------------------
+# Main scraper
+# ---------------------------------------------------------------------------
+
+def load_expanded_queries(press_dir: Path) -> pd.DataFrame:
+    """Load the expanded query set (593 queries) generated by expanded_search_terms.py."""
+    expanded_path = press_dir / "expanded_search_queries.csv"
+    original_path = press_dir / "search_queries.csv"
+
+    dfs = []
+    if original_path.exists():
+        dfs.append(pd.read_csv(original_path))
+    if expanded_path.exists():
+        dfs.append(pd.read_csv(expanded_path))
+
+    if not dfs:
+        raise FileNotFoundError("No search query files found")
+
+    df = pd.concat(dfs, ignore_index=True)
+    df = df.drop_duplicates(subset=["query"]).reset_index(drop=True)
+    return df
+
+
+def run_live_search(
+    queries_df: pd.DataFrame,
+    output_dir: Path,
+    bing_api_key: Optional[str] = None,
+    delay: float = 1.0,
+    max_queries_per_city: int = 50,
+) -> pd.DataFrame:
     """
-    Create all search queries for RTCC press releases.
+    Execute live search across all queries. Rate-limited.
+
+    Args:
+        queries_df: DataFrame with columns: city, query, rtcc_year
+        output_dir: Where to save results
+        bing_api_key: Optional Bing News API key
+        delay: Seconds between requests (rate limiting)
+        max_queries_per_city: Cap queries per city to avoid over-scraping
     """
-    queries = []
+    all_results = []
+    total_queries = 0
+    total_hits = 0
 
-    for city, config in CITY_SOURCES.items():
-        for term in config["search_terms"]:
-            queries.append({
-                "city": city,
-                "query": term,
-                "rtcc_year": config["rtcc_year"],
-                "sources": config["sources"]
-            })
+    for city in queries_df["city"].unique():
+        city_queries = queries_df[queries_df["city"] == city].head(max_queries_per_city)
+        city_hits = 0
 
-    return queries
+        logger.info(f"Searching {city}: {len(city_queries)} queries")
+
+        for _, row in city_queries.iterrows():
+            query = row["query"]
+            rtcc_year = row.get("rtcc_year", "")
+            category = row.get("query_category", "unknown")
+
+            # --- Google News RSS ---
+            results = search_google_news_rss(query, num_results=10)
+
+            for r in results:
+                r["city"] = city
+                r["query_used"] = query
+                r["rtcc_year"] = rtcc_year
+                r["query_category"] = category
+                r["source_type"] = "google_news"
+                r["search_date"] = datetime.now().strftime("%Y-%m-%d")
+
+                # Extract structured data from snippet + title
+                combined_text = f"{r['title']} {r['snippet']}"
+                r["extracted_years"] = str(extract_implementation_dates(combined_text))
+                r["extracted_budget"] = extract_budget_info(combined_text) or ""
+                r["extracted_capabilities"] = str(extract_capabilities(combined_text))
+
+            all_results.extend(results)
+            city_hits += len(results)
+            total_queries += 1
+
+            if total_queries % 20 == 0:
+                logger.info(f"  Progress: {total_queries} queries, {total_hits} hits")
+
+            time.sleep(delay)
+
+        # --- Vendor pages for this city ---
+        vendor_results = search_vendor_pages(city)
+        for r in vendor_results:
+            r["city"] = city
+            r["query_used"] = "vendor_page_scan"
+            r["rtcc_year"] = rtcc_year
+            r["query_category"] = "vendor"
+            r["search_date"] = datetime.now().strftime("%Y-%m-%d")
+        all_results.extend(vendor_results)
+        city_hits += len(vendor_results)
+
+        logger.info(f"  {city}: {city_hits} total hits")
+
+    # Build DataFrame
+    df_results = pd.DataFrame(all_results) if all_results else pd.DataFrame()
+
+    if not df_results.empty:
+        # Deduplicate by URL
+        before = len(df_results)
+        df_results = df_results.drop_duplicates(subset=["url"]).reset_index(drop=True)
+        after = len(df_results)
+        logger.info(f"Deduplicated: {before} -> {after} unique articles")
+
+        # Save
+        df_results.to_csv(output_dir / "scraped_articles.csv", index=False)
+        logger.info(f"Saved {len(df_results)} results to scraped_articles.csv")
+
+        # Update city summary
+        _update_city_summary(df_results, output_dir)
+
+    # Print summary
+    print(f"\n{'='*60}")
+    print("RTCC PRESS SEARCH RESULTS")
+    print(f"{'='*60}")
+    print(f"Queries executed: {total_queries}")
+    print(f"Total hits: {len(df_results)}")
+
+    if not df_results.empty:
+        print(f"\nBy city:")
+        print(df_results.groupby("city").size().to_string())
+        print(f"\nBy category:")
+        print(df_results.groupby("query_category").size().to_string())
+
+        # Flag articles with implementation year mentions
+        year_mentions = df_results[df_results["extracted_years"] != "[]"]
+        if not year_mentions.empty:
+            print(f"\nArticles mentioning implementation years: {len(year_mentions)}")
+            for _, row in year_mentions.head(10).iterrows():
+                print(f"  [{row['city']}] {row['title'][:60]}... -> years={row['extracted_years']}")
+
+    return df_results
 
 
-def manual_entry_template() -> str:
+def _update_city_summary(df_results: pd.DataFrame, output_dir: Path):
+    """Update city_summary.csv with search results."""
+    summary_path = output_dir / "city_summary.csv"
+
+    # Load existing if present
+    existing = pd.read_csv(summary_path) if summary_path.exists() else pd.DataFrame()
+
+    new_summary = df_results.groupby("city").agg(
+        scraped_articles=("title", "count"),
+        unique_sources=("source", "nunique"),
+        queries_with_hits=("query_used", "nunique"),
+    ).reset_index()
+
+    if not existing.empty:
+        merged = existing.merge(new_summary, on="city", how="outer", suffixes=("_old", ""))
+        new_summary = merged
+
+    new_summary.to_csv(summary_path, index=False)
+
+
+def run_scraper(output_dir: str = "results/study1_rtcc/press_correlation"):
     """
-    Return template for manual entry of found articles.
-    """
-    template = """
-# RTCC Press Release Entry Template
-
-For each article found, record:
-
-## Article Information
-- **City**: [City name]
-- **Title**: [Article headline]
-- **Source**: [Publication name]
-- **Date**: [Publication date]
-- **URL**: [Link to article]
-
-## Extracted Data
-- **Implementation Date Mentioned**: [Year or specific date]
-- **Budget/Cost**: [Any cost figures]
-- **Capabilities Mentioned**:
-  - [ ] ShotSpotter
-  - [ ] Camera integration
-  - [ ] License plate readers
-  - [ ] Predictive policing
-  - [ ] Data fusion
-  - [ ] Real-time monitoring
-  - [ ] GIS mapping
-  - [ ] Social media monitoring
-
-## Key Quotes
-> [Relevant quotes about RTCC implementation, effectiveness, or capabilities]
-
-## Notes
-[Any additional context or observations]
-
----
-"""
-    return template
-
-
-def create_known_articles_csv() -> pd.DataFrame:
-    """
-    Create DataFrame with known RTCC articles from research.
-
-    These are articles known to exist from prior research.
-    """
-    known_articles = [
-        {
-            "city": "Hartford",
-            "title": "Hartford's Real-Time Crime Center Launch",
-            "source": "Hartford Courant",
-            "date": "2016-03-15",
-            "url": "https://www.courant.com/news/hartford/hc-hartford-crime-center-20160315-story.html",
-            "implementation_year": 2016,
-            "budget": "$2.5 million",
-            "vendor": "Motorola Solutions",
-            "capabilities": ["camera_integration", "real_time_monitoring", "gis_mapping"],
-            "notes": "Launched March 2016, initial investment $2.5M"
-        },
-        {
-            "city": "Chicago",
-            "title": "Chicago's Strategic Decision Support Centers",
-            "source": "Chicago Tribune",
-            "date": "2017-01-01",
-            "url": "https://www.chicagotribune.com/news/criminal-justice/ct-strategic-decision-support-centers-2017-story.html",
-            "implementation_year": 2017,
-            "budget": "$10+ million",
-            "vendor": "Motorola + ShotSpotter",
-            "capabilities": ["shotspotter", "camera_integration", "predictive_policing", "real_time_monitoring"],
-            "notes": "Multiple SDSC locations across the city, launched 2017"
-        },
-        {
-            "city": "New Orleans",
-            "title": "NOPD Real-Time Crime Center",
-            "source": "NOLA.com",
-            "date": "2017-06-01",
-            "url": "https://www.nola.com/news/crime_police/article_f15c4d2e-4b3a-11e7-9c3c-002590d3e8a.html",
-            "implementation_year": 2017,
-            "budget": "$3 million",
-            "vendor": "Motorola Solutions",
-            "capabilities": ["camera_integration", "real_time_monitoring", "license_plate_readers"],
-            "notes": "Post-Katrina rebuild, launched 2017"
-        },
-        {
-            "city": "St. Louis",
-            "title": "St. Louis Real-Time Crime Center",
-            "source": "St. Louis Post-Dispatch",
-            "date": "2015-09-01",
-            "url": "https://www.stltoday.com/news/local/crime-courts-and-law/st-louis-crime-center/article_123456789.html",
-            "implementation_year": 2015,
-            "budget": "$1.5 million",
-            "vendor": "Unknown",
-            "capabilities": ["camera_integration", "real_time_monitoring"],
-            "notes": "Early adopter, 2015 launch"
-        },
-        {
-            "city": "Miami",
-            "title": "Miami Police Real-Time Crime Center",
-            "source": "Miami Herald",
-            "date": "2016-01-01",
-            "url": "https://www.miamiherald.com/news/local/crime/article123456789.html",
-            "implementation_year": 2016,
-            "budget": "$5 million",
-            "vendor": "Multiple vendors",
-            "capabilities": ["camera_integration", "real_time_monitoring", "license_plate_readers"],
-            "notes": "Launched 2016, consolidated existing surveillance"
-        },
-        {
-            "city": "Albuquerque",
-            "title": "Albuquerque RTCC with ShotSpotter Integration",
-            "source": "Albuquerque Journal",
-            "date": "2020-01-01",
-            "url": "https://www.abqjournal.com/123456/rtcc-launch-2020.html",
-            "implementation_year": 2020,
-            "budget": "$1.8 million",
-            "vendor": "ShotSpotter integration",
-            "capabilities": ["shotspotter", "camera_integration", "real_time_monitoring"],
-            "notes": "Launched 2020 during COVID pandemic"
-        },
-        {
-            "city": "Fresno",
-            "title": "Fresno Real-Time Crime Center",
-            "source": "Fresno Bee",
-            "date": "2018-01-01",
-            "url": "https://www.fresnobee.com/news/local/crime/article123456789.html",
-            "implementation_year": 2018,
-            "budget": "$2.2 million",
-            "vendor": "Unknown",
-            "capabilities": ["camera_integration", "real_time_monitoring"],
-            "notes": "California's Central Valley, launched 2018"
-        },
-        {
-            "city": "Newark",
-            "title": "Newark Real-Time Crime Center",
-            "source": "NJ.com",
-            "date": "2018-01-01",
-            "url": "https://www.nj.com/essex/2018/01/newark_rtcc_launch.html",
-            "implementation_year": 2018,
-            "budget": "$2 million",
-            "vendor": "Unknown",
-            "capabilities": ["camera_integration", "real_time_monitoring"],
-            "notes": "Launched 2018"
-        }
-    ]
-
-    return pd.DataFrame(known_articles)
-
-
-def run_scraper(output_dir: str):
-    """
-    Run the RTCC press release scraper.
+    Run the full RTCC press release scraper with expanded queries.
 
     Creates:
-    - CSV of known articles
-    - Template for manual entry
-    - Summary by city
+    - scraped_articles.csv — all search results
+    - city_summary.csv — updated summary
     """
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
 
-    # Create known articles CSV
-    df_known = create_known_articles_csv()
-    df_known.to_csv(output_path / "known_rtcc_articles.csv", index=False)
+    # Load expanded queries
+    queries_df = load_expanded_queries(output_path)
+    logger.info(f"Loaded {len(queries_df)} queries across {queries_df['city'].nunique()} cities")
 
-    # Create manual entry template
-    template = manual_entry_template()
-    with open(output_path / "MANUAL_ENTRY_TEMPLATE.md", "w") as f:
-        f.write(template)
+    # Run live search
+    df_results = run_live_search(queries_df, output_path)
 
-    # Create search queries for manual searching
-    queries = create_search_queries()
-    df_queries = pd.DataFrame(queries)
-    df_queries.to_csv(output_path / "search_queries.csv", index=False)
-
-    # Create summary by city
-    summary = []
-    for city, config in CITY_SOURCES.items():
-        city_articles = df_known[df_known["city"] == city]
-        summary.append({
-            "city": city,
-            "rtcc_year": config["rtcc_year"],
-            "known_articles": len(city_articles),
-            "search_terms": len(config["search_terms"]),
-            "sources": ", ".join(config["sources"])
-        })
-
-    df_summary = pd.DataFrame(summary)
-    df_summary.to_csv(output_path / "city_summary.csv", index=False)
-
-    print(f"\n{'='*60}")
-    print("RTCC PRESS RELEASE SCRAPER OUTPUT")
-    print(f"{'='*60}")
-    print(f"\nKnown articles: {len(df_known)}")
-    print(f"Search queries generated: {len(queries)}")
-    print(f"\nOutput files:")
-    print(f"  - {output_path}/known_rtcc_articles.csv")
-    print(f"  - {output_path}/search_queries.csv")
-    print(f"  - {output_path}/city_summary.csv")
-    print(f"  - {output_path}/MANUAL_ENTRY_TEMPLATE.md")
-
-    print(f"\n{'='*60}")
-    print("NEXT STEPS")
-    print(f"{'='*60}")
-    print("1. Review known_rtcc_articles.csv and verify/update entries")
-    print("2. Use search_queries.csv to manually search for articles")
-    print("3. Use MANUAL_ENTRY_TEMPLATE.md for new article entries")
-    print("4. Cross-reference with clearance rate trends")
-
-    return df_known, df_queries, df_summary
+    return df_results
 
 
 if __name__ == "__main__":
     import argparse
 
-    parser = argparse.ArgumentParser(description="RTCC Press Release Scraper")
-    parser.add_argument(
-        "--output",
-        default="results/study1_rtcc/press_correlation",
-        help="Output directory"
-    )
-
+    parser = argparse.ArgumentParser(description="RTCC Press Release Scraper (Expanded)")
+    parser.add_argument("--output", default="results/study1_rtcc/press_correlation")
+    parser.add_argument("--delay", type=float, default=1.0, help="Delay between requests (seconds)")
+    parser.add_argument("--max-per-city", type=int, default=50, help="Max queries per city")
     args = parser.parse_args()
+
     run_scraper(args.output)

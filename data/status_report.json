@@ -1,0 +1,22 @@
+{
+  "rtcc_cities_configured": 8,
+  "real_homicide_data": {
+    "chicago": {
+      "years": 14,
+      "range": [
+        2010,
+        2023
+      ]
+    }
+  },
+  "api_status": {
+    "fbi_cde": "not_working",
+    "bjs_nibrs": "untested",
+    "chicago_socrata": "working",
+    "other_city_portals": "mixed"
+  },
+  "data_sources": {
+    "chicago": "https://data.cityofchicago.org/resource/ijzp-q8t2.json",
+    "fbi_api_key_configured": true
+  }
+}

@@ -1,0 +1,6 @@
+metric,value
+true_effect_pp,-17.688887744110453
+placebo_mean_pp,-9.886845049488116
+placebo_std_pp,1.6813703687098562
+p_value,0.0
+n_placebo,1000.0

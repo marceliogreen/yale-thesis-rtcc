@@ -1,9 +1,9 @@
-city,rtcc_year,known_articles,search_terms,sources
-Hartford,2016,1,4,"Hartford Courant, Hartford PD, CT Mirror, WNPR"
-Miami,2016,1,4,"Miami Herald, City of Miami, Miami PD, WPLG Local 10"
-St. Louis,2015,1,4,"St. Louis Post-Dispatch, SLMPD, St. Louis Public Radio, KMOV"
-Newark,2018,1,4,"Newark Star-Ledger, Newark PD, NJ.com, WBGO"
-New Orleans,2017,1,4,"Times-Picayune, NOLA.com, NOPD, WWL-TV"
-Albuquerque,2020,1,4,"Albuquerque Journal, APD, KRQE, KOB"
-Fresno,2018,1,4,"Fresno Bee, Fresno PD, ABC30, GV Wire"
-Chicago,2017,1,5,"Chicago Tribune, Chicago Sun-Times, CPD, WGN"
+city,rtcc_year,known_articles,search_terms,sources,scraped_articles,unique_sources,queries_with_hits
+Albuquerque,2020,1,4,"Albuquerque Journal, APD, KRQE, KOB",34,1,4
+Chicago,2017,1,5,"Chicago Tribune, Chicago Sun-Times, CPD, WGN",42,1,5
+Fresno,2018,1,4,"Fresno Bee, Fresno PD, ABC30, GV Wire",31,1,4
+Hartford,2016,1,4,"Hartford Courant, Hartford PD, CT Mirror, WNPR",19,1,4
+Miami,2016,1,4,"Miami Herald, City of Miami, Miami PD, WPLG Local 10",38,1,4
+New Orleans,2017,1,4,"Times-Picayune, NOLA.com, NOPD, WWL-TV",34,1,4
+Newark,2018,1,4,"Newark Star-Ledger, Newark PD, NJ.com, WBGO",28,1,3
+St. Louis,2015,1,4,"St. Louis Post-Dispatch, SLMPD, St. Louis Public Radio, KMOV",36,1,4

@@ -1,0 +1,74 @@
+{
+  "Hartford": {
+    "ori": "CT0030100",
+    "rtcc_year": 2016,
+    "population": 121000,
+    "state": "CT",
+    "budget": 2500000,
+    "vendor": "Motorola Solutions",
+    "notes": "Launched March 2016, $2.5M initial investment"
+  },
+  "Miami": {
+    "ori": "FL0130200",
+    "rtcc_year": 2016,
+    "population": 467000,
+    "state": "FL",
+    "budget": 5000000,
+    "vendor": "Unknown (multiple)",
+    "notes": "Launched 2016, consolidated existing surveillance"
+  },
+  "St. Louis": {
+    "ori": "MO0640000",
+    "rtcc_year": 2015,
+    "population": 293000,
+    "state": "MO",
+    "budget": 1500000,
+    "vendor": "Unknown",
+    "notes": "Early adopter, 2015 launch"
+  },
+  "Newark": {
+    "ori": "NJ0071400",
+    "rtcc_year": 2018,
+    "population": 277000,
+    "state": "NJ",
+    "budget": 2000000,
+    "vendor": "Unknown",
+    "notes": "Launched 2018"
+  },
+  "New Orleans": {
+    "ori": "LA0360000",
+    "rtcc_year": 2017,
+    "population": 376000,
+    "state": "LA",
+    "budget": 3000000,
+    "vendor": "Motorola Solutions",
+    "notes": "Post-Katrina rebuild, 2017 launch"
+  },
+  "Albuquerque": {
+    "ori": "NM0010100",
+    "rtcc_year": 2020,
+    "population": 564000,
+    "state": "NM",
+    "budget": 1800000,
+    "vendor": "ShotSpotter integration",
+    "notes": "Launched 2020 during COVID"
+  },
+  "Fresno": {
+    "ori": "CA0190200",
+    "rtcc_year": 2018,
+    "population": 545000,
+    "state": "CA",
+    "budget": 2200000,
+    "vendor": "Unknown",
+    "notes": "California's Central Valley"
+  },
+  "Chicago": {
+    "ori": "IL0160000",
+    "rtcc_year": 2017,
+    "population": 2694000,
+    "state": "IL",
+    "budget": 10000000,
+    "vendor": "Motorola + ShotSpotter",
+    "notes": "Large scale, $10M+ investment"
+  }
+}

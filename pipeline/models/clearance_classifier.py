@@ -329,7 +329,7 @@ class RTCCClearanceClassifier:
         feature_names = self._get_feature_names()
 
         # Time series split
-        tscv = TimeSeriesSplit(n_splits=5, test_size=0.2)
+        tscv = TimeSeriesSplit(n_splits=5, test_size=max(1, int(len(y) * 0.2)))
 
         # Train XGBoost
         logger.info("Training XGBoost...")

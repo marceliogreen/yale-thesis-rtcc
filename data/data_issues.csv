@@ -1,0 +1,4 @@
+city,ori,issue,data_level,actual_agency
+Hartford,CT0030100,NOT_IN_PANEL,unknown,
+Newark,NJ0071400,NOT_IN_PANEL,city,
+Fresno,CA0190200,WRONG_AGENCY,UNKNOWN,arcadia
