@@ -1,41 +1,60 @@
-# Environment variables (API keys, paths)
+# ── Secrets ──
 .env
 
-# Python cache
+# ── Python ──
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
-
-# Virtual environments
 venv/
 env/
 ENV/
 
-# IDE
+# ── IDE ──
 .vscode/
 .idea/
 *.swp
 *.swo
 
-# OS
+# ── OS ──
 .DS_Store
 Thumbs.db
 
-# Data and results (large files - but track analysis outputs)
-# results/*.png
-# results/*.csv
-# results/*.parquet
+# ── Data cache (keep pipeline/results/ — those are analysis outputs) ──
 pipeline/data/cache/
 data/cache/
+*.tsv
 
-# Jupyter
+# ── ICPSR raw data (downloaded separately) ──
+ICPSR_*/
+**/ICPSR_*/
+
+# ── Copyrighted papers (keep locally, don't track) ──
+*.pdf
+scraping-tools/scraped_content/
+scraping-tools/.firecrawl/
+
+# ── Third-party scraping tools (available locally) ──
+scraping-tools/Scrapegraph-ai/
+scraping-tools/autoscraper/
+scraping-tools/maxun/
+scraping-tools/scrape-it-now/
+
+# ── Large data dumps ──
+data/comparison_pool_yearly.csv
+data/washington_post_homicides.csv
+data/chicago_homicide_full.csv
+data/chicago_homicide_real.csv
+downloads/
+
+# ── Jupyter ──
 .ipynb_checkpoints/
 *.ipynb
 
-# Coverage
+# ── Other ──
 htmlcov/
 .coverage
 .pytest_cache/
 .osgrep
+uploads/
