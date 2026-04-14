@@ -1,0 +1,74 @@
+{
+  "rtcc_academic_sources": [
+    {
+      "title": "An Extended Impact Evaluation of Real-Time Crime Center (RTCC) Technologies on Violent Crime Outcomes",
+      "url": "https://www.tandfonline.com/doi/abs/10.1080/24751979.2025.2475515",
+      "journal": "Taylor & Francis",
+      "year": "2025",
+      "relevance": "HIGH - Direct RTCC impact evaluation",
+      "status": "PUB_PENDING"
+    },
+    {
+      "title": "Does the deployment of information to police improve crime solvability? A quasi-experimental impact evaluation of real-time crime center (RTCC) technologies on violent crime",
+      "url": "https://www.tandfonline.com/doi/abs/10.1080/07418825.2023.2264362",
+      "journal": "Justice Quarterly",
+      "year": "2023",
+      "relevance": "HIGH - Quasi-experimental RTCC evaluation",
+      "status": "PUB_PENDING"
+    },
+    {
+      "title": "Do real-time crime centers improve case clearance? An examination of Chicago's strategic decision support centers",
+      "url": "https://read-me.org/s/1-s20-S0047235223001162-main.pdf",
+      "journal": "Academic (PDF)",
+      "year": "2023",
+      "relevance": "HIGH - Chicago RTCC clearance study",
+      "status": "PDF_AVAILABLE"
+    },
+    {
+      "title": "The centralization and rapid deployment of police agency information technologies: An appraisal of real-time crime centers in the US",
+      "url": "https://journals.sagepub.com/doi/abs/10.1177/0032258X221107587",
+      "journal": "Police Quarterly",
+      "year": "2022",
+      "relevance": "HIGH - US-wide RTCC appraisal",
+      "status": "PUB_PENDING"
+    },
+    {
+      "title": "Law enforcement motivations for establishing real-time crime centers: A mixed model study",
+      "url": "https://stars.library.ucf.edu/cgi/viewcontent.cgi?article=2243&context=etd2020",
+      "journal": "UCF Thesis/Dissertation",
+      "year": "2020",
+      "relevance": "MEDIUM - Motivations study",
+      "status": "OPEN_ACCESS"
+    },
+    {
+      "title": "Real time crime centers in chicago",
+      "url": "https://yidawang.ca/pdf/rand.pdf",
+      "journal": "RAND Report",
+      "year": "Unknown",
+      "relevance": "HIGH - RAND Chicago study",
+      "status": "PDF_AVAILABLE"
+    },
+    {
+      "title": "Real-Time Crime Centers as Frontiers of Technology in Policing: Configurations, Functions, and Their Impact on Police Practices and Public Perceptions",
+      "url": "https://digitalcommons.fiu.edu/record/14169/files/FIDC01117.pdf",
+      "journal": "FIU Digital Commons",
+      "year": "Unknown",
+      "relevance": "HIGH - Police practices & perceptions",
+      "status": "PDF_AVAILABLE"
+    },
+    {
+      "title": "Evolving technologies in law enforcement: Documenting the continued growth of real-time crime centers",
+      "url": "https://journals.sagepub.com/doi/abs/10.1177/0032258X261436634",
+      "journal": "FBI Law Enforcement Bulletin",
+      "year": "2023",
+      "relevance": "MEDIUM - Growth documentation",
+      "status": "PUB_PENDING"
+    }
+  ],
+  "search_metadata": {
+    "search_date": "2026-03-31",
+    "search_query": "real time crime center effectiveness evaluation",
+    "total_found": 10,
+    "highly_relevant": 6
+  }
+}

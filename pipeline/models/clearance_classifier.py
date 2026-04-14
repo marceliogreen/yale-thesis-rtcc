@@ -234,13 +234,14 @@ class RTCCClearanceClassifier:
         # Make a copy to avoid modifying original
         df = df.copy()
 
-        # Add RTCC features
+        # Add RTCC features — match city names case-insensitively
+        city_years_lower = {k.lower(): v for k, v in city_rtcc_years.items()}
         df["post_rtcc"] = df.apply(
-            lambda row: row["year"] >= city_rtcc_years.get(row["city"], 9999),
+            lambda row: int(row["year"]) >= city_years_lower.get(str(row["city"]).lower(), 9999),
             axis=1,
-        )
+        ).astype(int)
         df["years_since_rtcc"] = df.apply(
-            lambda row: max(0, row["year"] - city_rtcc_years.get(row["city"], row["year"] + 1)),
+            lambda row: max(0, int(row["year"]) - city_years_lower.get(str(row["city"]).lower(), int(row["year"]) + 1)),
             axis=1,
         )
 
@@ -322,8 +323,12 @@ class RTCCClearanceClassifier:
         """
         logger.info("Training models with TimeSeriesSplit CV")
 
-        # Preprocess features
+        # Preprocess features — convert to dense array
         X_processed = self.preprocessor.fit_transform(X, y)
+        if hasattr(X_processed, "toarray"):
+            X_processed = X_processed.toarray().astype(np.float64)
+        else:
+            X_processed = np.array(X_processed, dtype=np.float64)
 
         # Get feature names after preprocessing
         feature_names = self._get_feature_names()
@@ -377,19 +382,16 @@ class RTCCClearanceClassifier:
 
         self.models["logistic"].fit(X_processed, y)
 
-        # Store CV scores
-        self.metrics["xgboost"] = {
-            "cv_scores": cv_results_xgb["test_score"].tolist(),
-            "mean_cv": cv_results_xgb["test_score"].mean(),
-        }
-        self.metrics["random_forest"] = {
-            "cv_scores": cv_results_rf["test_score"].tolist(),
-            "mean_cv": cv_results_rf["test_score"].mean(),
-        }
-        self.metrics["logistic"] = {
-            "cv_scores": cv_results_lr["test_score"].tolist(),
-            "mean_cv": cv_results_lr["test_score"].mean(),
-        }
+        # Store CV scores (handle NaN from failed folds)
+        def safe_cv_stats(scores):
+            valid = scores[~np.isnan(scores)]
+            if len(valid) == 0:
+                return {"cv_scores": scores.tolist(), "mean_cv": float("nan")}
+            return {"cv_scores": scores.tolist(), "mean_cv": float(valid.mean())}
+
+        self.metrics["xgboost"] = safe_cv_stats(cv_results_xgb["test_score"])
+        self.metrics["random_forest"] = safe_cv_stats(cv_results_rf["test_score"])
+        self.metrics["logistic"] = safe_cv_stats(cv_results_lr["test_score"])
 
         logger.info("Model training complete")
         for model_name, metric in self.metrics.items():
@@ -434,6 +436,10 @@ class RTCCClearanceClassifier:
         logger.info("Evaluating models")
 
         X_processed = self.preprocessor.transform(X)
+        if hasattr(X_processed, "toarray"):
+            X_processed = X_processed.toarray().astype(np.float64)
+        else:
+            X_processed = np.array(X_processed, dtype=np.float64)
         results = {}
 
         for model_name, model in self.models.items():
@@ -511,49 +517,67 @@ class RTCCClearanceClassifier:
             return
 
         X_processed = self.preprocessor.transform(X)
+        if hasattr(X_processed, "toarray"):
+            X_processed = X_processed.toarray().astype(np.float64)
+        else:
+            X_processed = np.array(X_processed, dtype=np.float64)
+        # Convert to dense float array if sparse
+        if hasattr(X_processed, "toarray"):
+            X_processed_dense = X_processed.toarray().astype(np.float64)
+        else:
+            X_processed_dense = np.array(X_processed, dtype=np.float64)
+
         feature_names = self._get_feature_names()
 
         # Create SHAP explainer
         if model_name in ("xgboost", "random_forest"):
             explainer = shap.TreeExplainer(model)
+            shap_values = explainer.shap_values(X_processed_dense)
+            # Binary classification may return list of 2 arrays — use class 1
+            if isinstance(shap_values, list):
+                shap_values = shap_values[1]
+            base_val = explainer.expected_value
+            if isinstance(base_val, (list, np.ndarray)):
+                base_val = base_val[1] if len(base_val) > 1 else base_val[0]
         else:
-            explainer = shap.LinearExplainer(model, X_processed)
+            explainer = shap.LinearExplainer(model, X_processed_dense)
+            shap_values = explainer.shap_values(X_processed_dense)
+            base_val = explainer.expected_value
+            if isinstance(base_val, (list, np.ndarray)):
+                base_val = float(base_val[0])
 
-        # Calculate SHAP values
-        shap_values = explainer.shap_values(X_processed)
+        shap_values = np.array(shap_values, dtype=np.float64)
 
         # Waterfall plot for median observation
-        median_idx = len(X_processed) // 2
+        median_idx = len(X_processed_dense) // 2
 
-        fig = shap.plots.waterfall(
-            shap.Explanation(
-                values=shap_values[median_idx],
-                base_values=explainer.expected_value,
-                data=X_processed[median_idx],
-                feature_names=feature_names,
-            ),
-            show=False,
-            max_display=max_display,
+        import matplotlib
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+
+        explanation = shap.Explanation(
+            values=shap_values[median_idx],
+            base_values=float(base_val),
+            data=X_processed_dense[median_idx],
+            feature_names=feature_names,
         )
-
+        shap.plots.waterfall(explanation, show=False, max_display=max_display)
         output_path = self.results_dir / "figures" / "shap" / f"waterfall_{model_name}.png"
-        fig.figure.savefig(output_path, dpi=300, bbox_inches="tight")
+        plt.savefig(output_path, dpi=300, bbox_inches="tight")
+        plt.close()
         logger.info(f"Saved waterfall plot to {output_path}")
 
         # Beeswarm plot
-        fig = shap.plots.beeswarm(
-            shap.Explanation(
-                values=shap_values,
-                base_values=explainer.expected_value,
-                data=X_processed,
-                feature_names=feature_names,
-            ),
-            show=False,
-            max_display=max_display,
+        explanation_all = shap.Explanation(
+            values=shap_values,
+            base_values=float(base_val),
+            data=X_processed_dense,
+            feature_names=feature_names,
         )
-
+        shap.plots.beeswarm(explanation_all, show=False, max_display=max_display)
         output_path = self.results_dir / "figures" / "shap" / f"beeswarm_{model_name}.png"
-        fig.figure.savefig(output_path, dpi=300, bbox_inches="tight")
+        plt.savefig(output_path, dpi=300, bbox_inches="tight")
+        plt.close()
         logger.info(f"Saved beeswarm plot to {output_path}")
 
     def save_results(self, path: Optional[Path] = None):

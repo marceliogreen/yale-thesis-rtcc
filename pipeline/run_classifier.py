@@ -62,15 +62,17 @@ def load_and_prepare_data(panel_path: str) -> pd.DataFrame:
     # Filter to records with actual clearance data and homicides
     df = df[df["homicides"] >= 1].copy()
     df = df.dropna(subset=["clearance_rate"]).copy()
+
+    # Cap clearance_rate at 1.0 (UCR allows >1 due to prior-year clearances)
+    df["clearance_rate"] = df["clearance_rate"].clip(upper=1.0)
     logger.info(f"After filtering (homicides >= 1, clearance_rate not null): {len(df)} rows")
 
     # Add region
     df["region"] = df["state_abb"].map(STATE_TO_REGION).fillna("Unknown")
 
-    # Add city name for RTCC cities (from rtcc_city flag)
-    # The panel uses ori9 as identifier — map to city names where possible
-    # For non-RTCC cities, use agency_name
-    df["city"] = df["agency_name"].fillna("Unknown")
+    # Map city names: use rtcc_city column for RTCC cities, agency_name otherwise
+    # rtcc_city is a string column (city name) for RTCC cities, NaN for comparison
+    df["city"] = df["rtcc_city"].fillna(df["agency_name"].str.lower())
 
     # For the target: binary classification — clearance >= 50%
     df["clearance_binary"] = (df["clearance_rate"] >= 0.5).astype(int)
@@ -78,13 +80,14 @@ def load_and_prepare_data(panel_path: str) -> pd.DataFrame:
 
     # Log RTCC city coverage
     if "rtcc_city" in df.columns:
-        rtcc_data = df[df["rtcc_city"] == True]
+        # rtcc_city is string (city name), not boolean
+        rtcc_mask = df["rtcc_city"].notna() & (df["rtcc_city"] != "")
+        rtcc_data = df[rtcc_mask]
         logger.info(f"RTCC city observations: {len(rtcc_data)}")
-        for city_name, year in RTCC_CITY_YEARS.items():
-            # Match by various possible identifiers
-            city_mask = df["city"].str.contains(city_name, case=False, na=False)
-            if city_mask.any():
-                logger.info(f"  {city_name}: {city_mask.sum()} observations")
+        for city_name in df["rtcc_city"].dropna().unique():
+            n = (df["rtcc_city"] == city_name).sum()
+            n_post = ((df["rtcc_city"] == city_name) & (df["post_rtcc"] == 1)).sum()
+            logger.info(f"  {city_name}: {n} observations ({n_post} post-RTCC)")
 
     return df
 
@@ -110,6 +113,9 @@ def run(output_dir: str = "results/study1_rtcc"):
 
     # Load data
     df = load_and_prepare_data(str(panel_path))
+
+    # Sort by year for temporal validation
+    df = df.sort_values("year").reset_index(drop=True)
 
     # Initialize classifier
     classifier = RTCCClearanceClassifier(results_dir=results_dir)
