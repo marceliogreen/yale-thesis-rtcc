@@ -58,13 +58,13 @@ yale-thesis-rtcc/
 
 | Finding | Value | Method |
 |---------|-------|--------|
-| PSM-DiD ATT (primary) | -10.0 pp (p = 0.008) | Propensity-score matched DiD |
+| PSM-DiD ATT (primary) | Not reproducible from current repo snapshot | `run_psm_did.py` requires missing `data/master_analysis_panel_v2.csv` |
 | Monte Carlo bootstrap mean | -17.7 pp | Parametric bootstrap (10,000 iter) |
-| Pre-COVID reversal | +0.49 pp (p = 0.012) | COVID-weighted robustness |
+| Homicide-weighted ITS sensitivity | -14.1 pp (p < 0.001) | `robustness_04_covid_weighted_binomial.py` |
 | ITS pooled level change | -0.178 (p = 0.606) | Bayesian ITS (15 cities) |
 | Cognitive predictions | 16 / 18 supported | Cross-city cognitive framework |
 
-**No specification produces a statistically significant positive effect of RTCC adoption on clearance rates.**
+**The reproducible Study 1 results in this repo snapshot do not show a statistically significant positive effect of RTCC adoption on clearance rates.**
 
 ## Reproduction
 
@@ -72,7 +72,7 @@ yale-thesis-rtcc/
 git clone https://github.com/greenmagic6/yale-thesis-rtcc.git
 cd yale-thesis-rtcc
 pip install -r requirements.txt
-python pipeline/run_study1.py
+python pipeline/run_study1.py   
 ```
 
 See `appendix-code-summary.md` for full traceability of every figure, table, and numerical estimate.

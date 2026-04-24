@@ -26,6 +26,7 @@ if project_root_str not in sys.path:
     sys.path.insert(0, project_root_str)
 
 import httpx
+import numpy as np
 import pandas as pd
 from dotenv import load_dotenv
 
@@ -72,8 +73,21 @@ class UnifiedCrimeDataClient:
         for city, ori in get_rtcc_oris().items()
     }
 
+    # Reverse-engineered CDE webapp ORIs differ from some panel/Kaplan ORIs.
+    # These aliases preserve the checked-in FBI CDE results when the legacy
+    # api.data.gov routes fall back to the current webapp endpoints.
+    FBI_WEBAPP_ORI_ALIASES = {
+        "IL0160000": "ILCPD0000",
+        "MO0640000": "MOSPD0000",
+        "LA0360000": "LANPD0000",
+        "FL0130200": "FL0130600",
+        "NJ0071400": "NJNPD0000",
+        "CA0190200": "CA0100500",
+    }
+
     # API Endpoints
     FBI_CDE_BASE = "https://api.usa.gov/crime/fbi/cde"
+    FBI_CDE_WEBAPP_BASE = "https://cde.ucr.cjis.gov/LATEST"
     BJS_NIBRS_BASE = "https://api.bjs.ojp.gov/nibrs"
     ICPSR_BASE = "https://dir.api.it.umich.edu"
     LEMAS_BASE = "https://api.bjs.ojp.gov/lemas"
@@ -291,6 +305,51 @@ class UnifiedCrimeDataClient:
         logger.error(f"All retries exhausted for {url}")
         raise last_error
 
+    async def _fetch_cde_webapp_json(
+        self,
+        client: httpx.AsyncClient,
+        path: str,
+        params: Optional[Dict] = None,
+    ) -> Dict:
+        """Fetch from the reverse-engineered CDE webapp endpoints."""
+        url = f"{self.FBI_CDE_WEBAPP_BASE}{path}"
+        response = await client.get(url, params=params or {}, timeout=30.0)
+        response.raise_for_status()
+        return response.json()
+
+    @staticmethod
+    def _aggregate_shr_actuals_to_offense(data: Dict) -> Dict:
+        """
+        Convert monthly SHR webapp data into the legacy annual offense structure.
+        """
+        annual_counts: Dict[int, int] = {}
+        actuals = data.get("actuals") or {}
+        for _series_name, monthly_data in actuals.items():
+            if not monthly_data:
+                continue
+            for month_year, count in monthly_data.items():
+                try:
+                    _month, year_str = month_year.split("-")
+                    year = int(year_str)
+                except ValueError:
+                    continue
+                annual_counts[year] = annual_counts.get(year, 0) + int(count or 0)
+
+        return {
+            "offenses": {
+                "offense": [
+                    {
+                        "crime_name": "Homicide",
+                        "data": {
+                            str(year): {"actual": count, "cleared": None}
+                            for year, count in sorted(annual_counts.items())
+                        },
+                    }
+                ]
+            },
+            "source": "fbi_cde_webapp_shr",
+        }
+
     # ============ FBI CDE Methods ============
 
     async def get_fbi_homicide(
@@ -310,9 +369,6 @@ class UnifiedCrimeDataClient:
         Returns:
             API response with homicide counts by year
         """
-        if not self.fbi_api_key:
-            raise ValueError("FBI API key required. Get one at https://api.data.gov/signup/")
-
         endpoint = f"/agency/{ori}/offenses/homicide/{start_year}/{end_year}"
         url = f"{self.FBI_CDE_BASE}{endpoint}"
         params = {"API_KEY": self.fbi_api_key}
@@ -325,9 +381,28 @@ class UnifiedCrimeDataClient:
                 self.data_source_log.append(("fbi_cde", ori, start_year, end_year, "cache"))
                 return cached["data"]
 
-        # Fetch from API
+        # Fetch from API, with fallback to the current webapp endpoints if the
+        # legacy api.data.gov route is unavailable.
         async with httpx.AsyncClient() as client:
-            data = await self._fetch_with_retry(client, url, params)
+            try:
+                if not self.fbi_api_key:
+                    raise ValueError("legacy FBI API key not configured")
+                data = await self._fetch_with_retry(client, url, params)
+            except Exception as legacy_error:
+                logger.info(f"Legacy FBI homicide endpoint unavailable for {ori}; using CDE webapp fallback")
+                fallback_ori = self.FBI_WEBAPP_ORI_ALIASES.get(ori, ori)
+                shr_data = await self._fetch_cde_webapp_json(
+                    client,
+                    f"/shr/agency/{fallback_ori}",
+                    params={
+                        "from": f"01-{start_year}",
+                        "to": f"12-{end_year}",
+                        "type": "counts",
+                    },
+                )
+                data = self._aggregate_shr_actuals_to_offense(shr_data)
+                data["fallback_reason"] = str(legacy_error)
+                data["fallback_ori"] = fallback_ori
 
         # Save to cache
         self._save_to_cache(cache_path, data, endpoint)
@@ -345,9 +420,6 @@ class UnifiedCrimeDataClient:
 
         Includes clearance data when available.
         """
-        if not self.fbi_api_key:
-            raise ValueError("FBI API key required")
-
         endpoint = f"/summarized/agency/{ori}/offenses/{start_year}/{end_year}"
         url = f"{self.FBI_CDE_BASE}{endpoint}"
         params = {"API_KEY": self.fbi_api_key}
@@ -359,7 +431,13 @@ class UnifiedCrimeDataClient:
                 return cached["data"]
 
         async with httpx.AsyncClient() as client:
-            data = await self._fetch_with_retry(client, url, params)
+            try:
+                if not self.fbi_api_key:
+                    raise ValueError("legacy FBI API key not configured")
+                data = await self._fetch_with_retry(client, url, params)
+            except Exception as exc:
+                logger.info(f"Legacy FBI summarized endpoint unavailable for {ori}; returning empty summary")
+                data = {"source": "unavailable", "fallback_reason": str(exc)}
 
         self._save_to_cache(cache_path, data, endpoint)
         return data
@@ -372,9 +450,6 @@ class UnifiedCrimeDataClient:
 
         Useful for data quality checks.
         """
-        if not self.fbi_api_key:
-            raise ValueError("FBI API key required")
-
         endpoint = "/participation/national"
         url = f"{self.FBI_CDE_BASE}{endpoint}"
         params = {"API_KEY": self.fbi_api_key}
@@ -386,7 +461,14 @@ class UnifiedCrimeDataClient:
                 return cached["data"]
 
         async with httpx.AsyncClient() as client:
-            data = await self._fetch_with_retry(client, url, params)
+            try:
+                if not self.fbi_api_key:
+                    raise ValueError("legacy FBI API key not configured")
+                data = await self._fetch_with_retry(client, url, params)
+            except Exception as legacy_error:
+                logger.info("Legacy FBI participation endpoint unavailable; using CDE webapp properties fallback")
+                props = await self._fetch_cde_webapp_json(client, "/lookup/cde_properties")
+                data = {"data": props, "source": "fbi_cde_webapp_properties", "fallback_reason": str(legacy_error)}
 
         self._save_to_cache(cache_path, data, endpoint)
         return data
@@ -662,11 +744,12 @@ class UnifiedCrimeDataClient:
             return df
 
         # Compute clearance rate
-        df["clearance_rate"] = df.apply(
-            lambda row: row["clearance_count"] / row["homicide_count"]
-            if row["homicide_count"] > 0
-            else None,
-            axis=1,
+        df["clearance_count"] = pd.to_numeric(df["clearance_count"], errors="coerce")
+        df["homicide_count"] = pd.to_numeric(df["homicide_count"], errors="coerce")
+        df["clearance_rate"] = np.where(
+            df["homicide_count"].fillna(0) > 0,
+            df["clearance_count"].fillna(0) / df["homicide_count"],
+            np.nan,
         )
 
         # Sort by city and year

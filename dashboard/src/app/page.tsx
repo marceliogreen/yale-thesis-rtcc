@@ -3,10 +3,10 @@ import Link from 'next/link';
 
 const KEY_FINDINGS = [
   {
-    label: 'PRIMARY FINDING',
-    value: '\u221210.0 pp',
-    significance: 'p = 0.008 — statistically significant',
-    description: 'Cities that adopted RTCCs saw homicide clearance rates drop by 10 percentage points, not rise. This is the opposite of what the technology promises.',
+    label: 'REPRODUCIBILITY NOTE',
+    value: 'PSM pending',
+    significance: 'missing panel input',
+    description: 'The checked-in repo snapshot does not include the exact panel file needed to rerun the original PSM-DiD estimate, so that headline number is currently under-documented.',
     color: 'red' as const,
   },
   {
@@ -17,10 +17,10 @@ const KEY_FINDINGS = [
     color: 'orange' as const,
   },
   {
-    label: 'Pre-COVID Check',
-    value: '+0.49 pp',
-    significance: 'p = 0.012',
-    description: 'Before 2019, clearance trends were slightly improving. After COVID, they collapsed — meaning the pandemic confounds later results.',
+    label: 'Weighted ITS Check',
+    value: '\u221214.1 pp',
+    significance: 'p < 0.001',
+    description: 'A homicide-weighted ITS sensitivity still points negative, reinforcing the conclusion that the reproducible evidence in this snapshot does not support a positive RTCC effect.',
     color: 'green' as const,
   },
   {
@@ -65,7 +65,7 @@ export default function HomePage() {
           <h2 className="text-sm font-semibold text-dark uppercase tracking-wide mb-3">What This Thesis Finds</h2>
           <div className="text-sm text-muted leading-relaxed space-y-3">
             <p>Real-Time Crime Centers (RTCCs) integrate surveillance cameras, gunshot detection, license plate readers, and predictive algorithms into centralized analyst workstations. Over 80 cities have adopted them. The question: do they actually help solve more homicides?</p>
-            <p><strong className="text-dark">The answer is no.</strong> Across 8 cities that adopted RTCCs, homicide clearance rates dropped — not rose — after adoption. The primary statistical method (propensity-score matched difference-in-differences) estimates a <strong className="text-red">10 percentage point decline</strong>, with strong statistical significance (p = 0.008). No alternative method produces a positive effect.</p>
+            <p><strong className="text-dark">The answer is still no in the reproducible snapshot.</strong> Across the Study 1 reruns I could execute from the checked-in data, RTCC adoption does not show a statistically significant positive effect on homicide clearance. The Monte Carlo estimate remains strongly negative, and the pooled extended ITS result remains negative as well. The originally cited PSM-DiD headline estimate cannot currently be rerun from this repo alone because the required panel input is missing.</p>
             <p>A second study examines drone-as-first-responder programs in three cities through a cognitive science lens, finding that operators face the same perceptual limitations predicted by decades of laboratory research: attention degrades over time, fast response does not equal accurate understanding, and experience creates automatic but potentially biased threat evaluation.</p>
           </div>
         </div>

@@ -31,11 +31,11 @@ export default function ResultsPage() {
         <div className="bg-white rounded-lg border-l-4 border-red border border-border p-5">
           <div className="text-xs text-muted uppercase tracking-wide">Primary Estimate</div>
           <div className="flex items-baseline gap-3 mt-1">
-            <span className="text-3xl font-bold text-red">-10.0 pp</span>
-            <span className="text-sm text-muted">p = 0.008</span>
+            <span className="text-3xl font-bold text-red">pending repro</span>
+            <span className="text-sm text-muted">not reproducible from current snapshot</span>
           </div>
           <p className="text-sm text-muted mt-2 leading-relaxed">
-            Cities that adopted RTCCs solved <strong className="text-dark">10 fewer homicides per 100</strong> after adoption, compared to similar cities without RTCCs. This result is statistically significant — the probability of seeing this effect by chance is less than 1%.
+            The original PSM-DiD headline estimate is not currently reproducible from this repository snapshot because the processed panel it depends on is missing. The reproducible Study 1 reruns in this repo still point negative overall, but this specific primary estimate should be treated as pending until that panel is restored.
           </p>
         </div>
       </section>
@@ -105,11 +105,11 @@ export default function ResultsPage() {
         <h2 className="text-sm font-semibold text-dark uppercase tracking-wide mb-4">All Estimates — What They Mean</h2>
         <div className="space-y-3">
           {[
-            { label: 'PSM-DiD (primary)', value: '-10.0 pp', p: 'p = 0.008', meaning: 'The main finding. Matched similar cities with and without RTCCs, then compared before/after. Clearance rates dropped 10 percentage points.' },
+            { label: 'PSM-DiD (primary)', value: 'pending repro', p: 'missing panel input', meaning: 'The original PSM-DiD headline result is not reproducible from the current checked-in repo snapshot because the required processed panel is absent.' },
             { label: 'Monte Carlo simulation', value: '-17.7 pp', p: 'Bootstrap mean', meaning: 'Ran 10,000 simulated scenarios. The average estimated decline was even larger than the primary estimate.' },
             { label: 'Extended ITS (15 cities)', value: '-0.178', p: 'p = 0.606', meaning: 'A broader model with more cities. The direction is the same (negative) but not statistically significant — the effect varies by city.' },
             { label: 'XGBoost feature importance', value: '0.002', p: 'Minimal', meaning: 'When a machine learning model predicts clearance outcomes, RTCC adoption barely registers. Staffing and budget are 30x more predictive.' },
-            { label: 'Pre-COVID reversal', value: '+0.49 pp', p: 'p = 0.012', meaning: 'Before 2019, clearance rates were slightly improving year-over-year. The COVID pandemic disrupted policing, confounding results for cities that adopted after 2017.' },
+            { label: 'Weighted ITS sensitivity', value: '-14.1 pp', p: 'p < 0.001', meaning: 'A homicide-weighted sensitivity analysis remains negative, which supports the broader conclusion even though the original PSM panel is missing.' },
             { label: 'LASSO regression', value: '-0.0', p: 'Regularized to zero', meaning: 'A statistical method that automatically removes unimportant variables zeroed out RTCC entirely — it found no meaningful effect.' },
           ].map(est => (
             <div key={est.label} className="bg-white rounded-lg border border-border p-4">

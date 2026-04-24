@@ -15,10 +15,18 @@ Output: results/study1_rtcc/robustness/sensitivity_results.csv
 
 import logging
 from pathlib import Path
+import sys
 
 import numpy as np
 import pandas as pd
 from scipy import stats as spstats
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+project_root_str = str(PROJECT_ROOT)
+if project_root_str not in sys.path:
+    sys.path.insert(0, project_root_str)
+
+from pipeline.data.build_submission_artifacts import build_comparison_pool_yearly
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
@@ -183,7 +191,10 @@ def ols_did(treated_df, control_df, treatment_col="post_rtcc", covariates=None):
 
 def load_data():
     rtcc = pd.read_csv(BASE / "results/study1_rtcc" / "rtcc_city_panel_enhanced.csv")
-    comp = pd.read_csv(BASE / "thesis/data/comparison_pool_yearly.csv", low_memory=False)
+    comp_path = BASE / "data" / "comparison_pool_yearly.csv"
+    if not comp_path.exists():
+        build_comparison_pool_yearly(output_path=comp_path)
+    comp = pd.read_csv(comp_path, low_memory=False)
     return rtcc, comp
 
 

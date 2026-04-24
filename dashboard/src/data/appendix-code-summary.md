@@ -177,7 +177,7 @@ for i in range(n_iter):
     effects.append(effect)
 ```
 
-**Thesis estimate produced:** Monte Carlo mean −17.7 pp (10,000 iterations)
+**Current reproducible estimate:** Monte Carlo mean −17.7 pp (10,000 iterations)
 
 ### 2.4 `prophet_forecast.py` — Prophet Counterfactual Forecasting
 
@@ -265,7 +265,7 @@ result = did_model.fit(cov_type='cluster', cov_kwds={'groups': matched['city']})
 att = result.params['post:treated']
 ```
 
-**Thesis estimate produced:** ATT = −10.0 pp (p = 0.008) — the primary finding
+**Current repo status:** this estimate is not reproducible from the checked-in snapshot because `data/master_analysis_panel_v2.csv` is missing.
 
 **Figure produced:** Figure 6 (PSM-DiD coefficient plot)
 
@@ -325,7 +325,7 @@ def compute_annual_clearance_rates(homicides_df: pd.DataFrame) -> pd.DataFrame:
 | `robustness_01_event_study.py` | Event-study diagnostics | Pre-trend tests |
 | `robustness_02_matching_balance.py` | PSM balance (Love plot) | Standardized mean differences |
 | `robustness_03_sensitivities.py` | Contaminated controls, Fresno exclusion, mediator | Sensitivity bounds |
-| `robustness_04_covid_weighted_binomial.py` | COVID moderation, WLS, logit | +0.49 pp reversal (p = 0.012) |
+| `robustness_04_covid_weighted_binomial.py` | Weighted ITS, logit sensitivity | Homicide-weighted level change = −0.141 (p < 0.001) |
 | `robustness_05_extended_its.py` | 15-city extended ITS | Pooled level change: −0.178 (p = 0.606) |
 | `robustness_06_ml_pipeline.py` | XGBoost/RF/LASSO comparison | ML model comparison |
 
@@ -384,9 +384,9 @@ def compute_annual_clearance_rates(homicides_df: pd.DataFrame) -> pd.DataFrame:
 
 | Thesis Claim | Value | Script | Key Function | Output File |
 |---|---|---|---|---|
-| PSM-DiD ATT (primary) | −10.0 pp (p = 0.008) | `run_psm_did.py` | `prepare_did_sample()` + OLS | `psm_did_results.csv` |
+| PSM-DiD ATT (primary) | Not reproducible from current repo snapshot | `run_psm_did.py` | Missing `master_analysis_panel_v2.csv` input | No checked-in `psm_did_results.csv` |
 | Monte Carlo bootstrap mean | −17.7 pp | `monte_carlo.py` | `parametric_bootstrap()` | (pipeline stdout) |
-| Pre-COVID reversal | +0.49 pp (p = 0.012) | `robustness_04_covid_weighted_binomial.py` | `test_covid_moderation()` | `sensitivity_results.csv` |
+| Homicide-weighted ITS sensitivity | −0.141 (p < 0.001) | `robustness_04_covid_weighted_binomial.py` | `test_homicide_weighted()` | `robustness_8_9_10.csv` |
 | ITS pooled level change | −0.178 (p = 0.606) | `robustness_05_extended_its.py` | `run_extended_its()` | `robustness_6_extended_its.csv` |
 | XGBoost SHAP post_rtcc | 0.002 | `run_shap_causal.py` | SHAP computation | `robustness_7_xgboost_importance.csv` |
 | Chicago clearance change | −20.24 pp | `clearance_analysis.py` | `compute_annual_clearance_rates()` | `pre_post_rtcc_summary.csv` |

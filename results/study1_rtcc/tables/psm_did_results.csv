@@ -1,0 +1,2 @@
+label,status,reason,att,att_pval,n_obs
+omitted_submission_snapshot,omitted,Required PSM input panel not found: /Users/marcelinho/GitHub/yale-thesis-rtcc/data/master_analysis_panel_v2.csv. The checked-in submission snapshot omits the original processed panel.,,,

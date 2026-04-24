@@ -31,6 +31,7 @@ if project_root_str not in sys.path:
     sys.path.insert(0, project_root_str)
 
 from pipeline.config import DATA_CONFIG
+from pipeline.data.build_submission_artifacts import write_psm_status_file
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
@@ -66,6 +67,11 @@ CALIPER = 0.05
 
 def load_panel() -> pd.DataFrame:
     """Load panel v2."""
+    if not INPUT_PANEL.exists():
+        raise FileNotFoundError(
+            f"Required PSM input panel not found: {INPUT_PANEL}. "
+            "The checked-in submission snapshot omits the original processed panel."
+        )
     logger.info(f"Loading panel from {INPUT_PANEL}")
     df = pd.read_csv(INPUT_PANEL, low_memory=False)
     logger.info(f"Loaded {len(df):,} rows")
@@ -296,8 +302,11 @@ def main():
     logger.info("PSM-DiD ANALYSIS")
     logger.info("=" * 60)
 
-    # Load data
-    df = load_panel()
+    try:
+        df = load_panel()
+    except FileNotFoundError as exc:
+        logger.warning(str(exc))
+        return write_psm_status_file(str(exc))
 
     # Prepare sample
     sample = prepare_did_sample(df)
