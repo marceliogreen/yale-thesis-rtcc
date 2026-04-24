@@ -2,55 +2,55 @@
   {
     "cognitive_dimension": "Sustained Vigilance (Mackworth)",
     "key_author": "Mackworth (1948); Warm et al. (2008)",
-    "chula_vista_finding": "172s avg flight — below 20-min threshold per mission",
-    "elizabeth_finding": "but 8-12hr shifts across 10K+ missions create cumulative vigilance demand",
-    "cincinnati_finding": "11-hr shifts (0900-2000)",
-    "cross_city_assessment": "4 pilots — guaranteed vigilance degradation by Mackworth's 20-min onset",
-    "data_quality": "8.0% of 8"
+    "chula_vista_finding": "172s avg flight below 20-min threshold per mission, but 8-12hr shifts across 10K+ missions create cumulative vigilance demand",
+    "elizabeth_finding": "11-hr shifts (0900-2000), 4 pilots — guaranteed vigilance degradation by Mackworth's 20-min onset",
+    "cincinnati_finding": "8.0% of 8,254 flights exceed 20-min threshold; 12.1 min mean flight duration",
+    "cross_city_assessment": "All three programs create conditions for vigilance decrement. Cincinnati has the strongest quantitative evidence (8% exceed threshold).",
+    "data_quality": "strong"
   },
   {
     "cognitive_dimension": "Situation Awareness (Endsley)",
-    "key_author": "Endsley (1995",
-    "chula_vista_finding": "2015)",
-    "elizabeth_finding": "234s response — fast detection (Level 1)",
-    "cincinnati_finding": "comprehension (Level 2) unknown",
-    "cross_city_assessment": "94s response (2.5x faster than CV) but 31% success rate — speed-accuracy tradeoff confirms Endsley's Level 2 bottleneck",
-    "data_quality": "12.1 min avg flight measures aerial presence (Level 1); no Level 2/3 outcome data"
+    "key_author": "Endsley (1995, 2015)",
+    "chula_vista_finding": "234s response — fast detection (Level 1), comprehension (Level 2) unknown",
+    "elizabeth_finding": "94s response (2.5x faster than CV) but 31% success rate — speed-accuracy tradeoff confirms Endsley's Level 2 bottleneck",
+    "cincinnati_finding": "12.1 min avg flight measures aerial presence (Level 1); no Level 2/3 outcome data",
+    "cross_city_assessment": "Elizabeth provides the strongest test: fastest response time with lowest success rate supports that Level 1 speed does not improve Level 2 comprehension.",
+    "data_quality": "strong"
   },
   {
     "cognitive_dimension": "Procedural Justice (Tyler)",
-    "key_author": "Tyler (1990",
-    "chula_vista_finding": "2004)",
-    "elizabeth_finding": "Downtown-first expansion — early concentration in higher-crime areas; now city-wide",
-    "cincinnati_finding": "Most developed governance framework (General Order",
-    "cross_city_assessment": "privacy safeguards",
-    "data_quality": "audits) — procedural legitimacy in policy if not perception"
+    "key_author": "Tyler (1990, 2004)",
+    "chula_vista_finding": "Downtown-first expansion — early concentration in higher-crime areas; now city-wide",
+    "elizabeth_finding": "Most developed governance framework (General Order, privacy safeguards, audits) — procedural legitimacy in policy if not perception",
+    "cincinnati_finding": "Spatial concentration index 0.452 — 45.2% of flights within 1 sigma of deployment center",
+    "cross_city_assessment": "Cincinnati provides quantitative spatial evidence. Elizabeth shows governance can address legitimacy procedurally. No community perception data for any city.",
+    "data_quality": "moderate"
   },
   {
     "cognitive_dimension": "Intent Attribution (Heider-Simmel)",
     "key_author": "Heider & Simmel (1944)",
-    "chula_vista_finding": "10K+ missions",
-    "elizabeth_finding": "diverse incident types — high-volume intent attribution demand",
-    "cincinnati_finding": "10 mission types including 'suspicious person' — most vulnerability to Heider-Simmel over-attribution",
-    "cross_city_assessment": "20 distinct flight purposes from 8",
-    "data_quality": "254 flights; 'SUSPICIOUS PERSON (IP)' is 3rd most common"
+    "chula_vista_finding": "10K+ missions, diverse incident types — high-volume intent attribution demand",
+    "elizabeth_finding": "10 mission types including 'suspicious person' — most vulnerability to Heider-Simmel over-attribution",
+    "cincinnati_finding": "20 distinct flight purposes from 8,254 flights; 'SUSPICIOUS PERSON (IP)' is 3rd most common",
+    "cross_city_assessment": "All three programs require operators to infer intent from aerial footage. 'Suspicious person' category represents the canonical Heider-Simmel vulnerability.",
+    "data_quality": "moderate"
   },
   {
     "cognitive_dimension": "Automaticity (Bargh)",
     "key_author": "Bargh et al. (1996); Ferguson & Bargh (2004)",
     "chula_vista_finding": "10K+ missions over 4 years — fully developed automaticity; highest operator exposure of any US DFR program",
-    "elizabeth_finding": 1,
-    "cincinnati_finding": "390 deployments in 7 months (~199/month) — moderate exposure",
-    "cross_city_assessment": "automaticity emerging",
-    "data_quality": 8
+    "elizabeth_finding": "1,390 deployments in 7 months (~199/month) — moderate exposure, automaticity emerging",
+    "cincinnati_finding": "8,254 flights in 1 year — high exposure, rapid automaticity development",
+    "cross_city_assessment": "Natural experiment in automaticity development: Elizabeth (emerging) < Cincinnati (developing) < Chula Vista (fully developed).",
+    "data_quality": "strong"
   },
   {
     "cognitive_dimension": "Event Segmentation (Zacks)",
-    "key_author": "Zacks et al. (2001",
-    "chula_vista_finding": "2007)",
-    "elizabeth_finding": "Autonomous flight creates natural transition cues (approach",
-    "cincinnati_finding": "hover",
-    "cross_city_assessment": "orbit",
-    "data_quality": "return) that aid segmentation"
+    "key_author": "Zacks et al. (2001, 2007)",
+    "chula_vista_finding": "Autonomous flight creates natural transition cues (approach, hover, orbit, return) that aid segmentation",
+    "elizabeth_finding": "Weekday-only operations create natural daily/weekly boundaries — cognitively advantageous",
+    "cincinnati_finding": "34.3% nighttime flights — low-light conditions degrade visual event segmentation",
+    "cross_city_assessment": "Chula Vista has the best technological cues, Elizabeth has the best temporal boundaries, Cincinnati faces the hardest conditions.",
+    "data_quality": "moderate"
   }
 ]

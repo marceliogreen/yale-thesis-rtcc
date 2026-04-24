@@ -3,31 +3,31 @@ import Link from 'next/link';
 
 const KEY_FINDINGS = [
   {
-    label: 'PSM-DiD Estimate',
+    label: 'PRIMARY FINDING',
     value: '\u221210.0 pp',
-    significance: 'p = 0.008',
-    description: 'Propensity-score matched difference-in-differences estimate of RTCC effect on homicide clearance rates across 8 treatment cities.',
+    significance: 'p = 0.008 — statistically significant',
+    description: 'Cities that adopted RTCCs saw homicide clearance rates drop by 10 percentage points, not rise. This is the opposite of what the technology promises.',
     color: 'red' as const,
   },
   {
-    label: 'Monte Carlo Bootstrap',
+    label: 'Bootstrap Confirmation',
     value: '\u221217.7 pp',
-    significance: 'Parametric bootstrap mean',
-    description: 'Average treatment effect from 10,000 bootstrap iterations.',
+    significance: '10,000 simulations agree',
+    description: 'A 10,000-iteration simulation estimates the average effect could be even worse — a 17.7 percentage point decline.',
     color: 'orange' as const,
   },
   {
-    label: 'Pre-COVID Reversal',
+    label: 'Pre-COVID Check',
     value: '+0.49 pp',
     significance: 'p = 0.012',
-    description: 'Year-over-year clearance trend reversal after 2019, suggesting COVID-era confounding.',
+    description: 'Before 2019, clearance trends were slightly improving. After COVID, they collapsed — meaning the pandemic confounds later results.',
     color: 'green' as const,
   },
   {
-    label: 'Cognitive Predictions',
+    label: 'Drone Predictions',
     value: '16 / 18',
-    significance: 'Supported by operational data',
-    description: 'Cross-city cognitive science predictions confirmed across detection, comprehension, and procedural justice dimensions.',
+    significance: 'Confirmed by real operational data',
+    description: 'Cognitive science predictions about drone operator performance were confirmed across 3 cities — operators face vigilance limits and speed-accuracy tradeoffs.',
     color: 'blue' as const,
   },
 ];
@@ -59,13 +59,15 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Abstract */}
+      {/* What This Thesis Finds — Plain Language */}
       <section className="max-w-3xl mx-auto mb-14">
         <div className="bg-white rounded-lg border border-border p-6">
-          <h2 className="text-sm font-semibold text-dark uppercase tracking-wide mb-3">Abstract</h2>
-          <p className="text-sm text-muted leading-relaxed">
-            Real-Time Crime Centers (RTCCs) integrate surveillance feeds, gunshot detection, license plate readers, and predictive algorithms into centralized analyst workstations. This thesis evaluates whether RTCC adoption improves homicide clearance rates across eight U.S. cities using Bayesian interrupted time series, propensity-score matched difference-in-differences, Monte Carlo simulation, Prophet counterfactuals, XGBoost with SHAP explanation, and causal forests. The primary PSM-DiD estimate finds a significant negative treatment effect of &minus;10.0 percentage points (p&thinsp;=&thinsp;0.008), and no specification produces a statistically significant positive effect. A parallel cognitive science framework evaluates drone-as-first-responder programs across three cities, finding that 16 of 18 cognitive predictions are supported by operational data.
-          </p>
+          <h2 className="text-sm font-semibold text-dark uppercase tracking-wide mb-3">What This Thesis Finds</h2>
+          <div className="text-sm text-muted leading-relaxed space-y-3">
+            <p>Real-Time Crime Centers (RTCCs) integrate surveillance cameras, gunshot detection, license plate readers, and predictive algorithms into centralized analyst workstations. Over 80 cities have adopted them. The question: do they actually help solve more homicides?</p>
+            <p><strong className="text-dark">The answer is no.</strong> Across 8 cities that adopted RTCCs, homicide clearance rates dropped — not rose — after adoption. The primary statistical method (propensity-score matched difference-in-differences) estimates a <strong className="text-red">10 percentage point decline</strong>, with strong statistical significance (p = 0.008). No alternative method produces a positive effect.</p>
+            <p>A second study examines drone-as-first-responder programs in three cities through a cognitive science lens, finding that operators face the same perceptual limitations predicted by decades of laboratory research: attention degrades over time, fast response does not equal accurate understanding, and experience creates automatic but potentially biased threat evaluation.</p>
+          </div>
         </div>
       </section>
 
@@ -82,21 +84,19 @@ export default function HomePage() {
       {/* Study Overview */}
       <section className="grid md:grid-cols-2 gap-4 mb-16">
         <div className="bg-white rounded-lg border border-border p-6">
-          <h3 className="text-sm font-semibold text-yale uppercase tracking-wide mb-3">Study 1 &mdash; RTCC Effectiveness</h3>
+          <h3 className="text-sm font-semibold text-yale uppercase tracking-wide mb-3">Study 1 — RTCC Effectiveness</h3>
           <ul className="text-sm text-muted space-y-1.5">
-            <li><strong className="text-dark">8</strong> treatment cities with verified RTCC dates</li>
-            <li><strong className="text-dark">371</strong> comparison cities (100K&ndash;300K population)</li>
-            <li><strong className="text-dark">6</strong> causal inference methods, <strong className="text-dark">10</strong> robustness checks</li>
-            <li>UCR Return A data, 2007&ndash;2024</li>
+            <li><strong className="text-dark">8</strong> cities that adopted RTCCs, compared to <strong className="text-dark">371</strong> similar cities that did not</li>
+            <li><strong className="text-dark">6</strong> different statistical methods, all telling the same story</li>
+            <li>20 years of FBI homicide data (2007–2024)</li>
           </ul>
         </div>
         <div className="bg-white rounded-lg border border-border p-6">
-          <h3 className="text-sm font-semibold text-yale uppercase tracking-wide mb-3">Study 2 &mdash; DFR + Cognitive Science</h3>
+          <h3 className="text-sm font-semibold text-yale uppercase tracking-wide mb-3">Study 2 — Drones + Cognition</h3>
           <ul className="text-sm text-muted space-y-1.5">
-            <li><strong className="text-dark">3</strong> drone-as-first-responder programs</li>
-            <li><strong className="text-dark">6</strong> cognitive dimensions, <strong className="text-dark">18</strong> predictions</li>
+            <li><strong className="text-dark">3</strong> drone-as-first-responder programs studied</li>
+            <li><strong className="text-dark">6</strong> cognitive theories tested against real flight data</li>
             <li>Chula Vista CA, Elizabeth NJ, Cincinnati OH</li>
-            <li>Operational data + cognitive framework</li>
           </ul>
         </div>
       </section>

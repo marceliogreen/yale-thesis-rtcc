@@ -5,16 +5,14 @@
     "launch_date": "2020-01-01",
     "program_status": "active",
     "vendor": "Skydio",
+    "fleet_size": "Expanded (X2 + X10)",
     "avg_response_time_sec": 234,
     "avg_flight_time_sec": 172,
     "total_missions": 10000,
     "successful_missions": null,
-    "incidents_assisted": null,
-    "deployment_period": null,
-    "fleet_size": null,
-    "coverage_area": "Expanded city-wide from downtown",
-    "drone_models": "Skydio X2",
-    "data_quality": "Skydio X10"
+    "coverage_area": "City-wide (expanded from downtown)",
+    "deployment_period": "2020-present",
+    "data_quality": "secondary"
   },
   {
     "city": "Elizabeth",
@@ -22,15 +20,14 @@
     "launch_date": "2022-06-01",
     "program_status": "active",
     "vendor": "Skydio",
+    "fleet_size": "Multiple units",
     "avg_response_time_sec": 94,
     "avg_flight_time_sec": null,
     "total_missions": 1390,
     "successful_missions": 431,
     "incidents_assisted": 347,
-    "deployment_period": "Jun 2022 - Jan 2023",
-    "fleet_size": null,
     "coverage_area": "City-wide (Mon-Fri 0900-2000)",
-    "drone_models": "Skydio",
+    "deployment_period": "Jun 2022 - Jan 2023",
     "data_quality": "policy_doc"
   },
   {
@@ -39,15 +36,13 @@
     "launch_date": "2023-04-17",
     "program_status": "active",
     "vendor": "Axon/Skydio",
+    "fleet_size": "Expanding",
     "avg_response_time_sec": null,
     "avg_flight_time_sec": null,
-    "total_missions": null,
+    "total_missions": 8254,
     "successful_missions": null,
-    "incidents_assisted": null,
-    "deployment_period": null,
-    "fleet_size": null,
-    "coverage_area": "Downtown → 90% city by end 2025",
-    "drone_models": "Skydio autonomous",
+    "coverage_area": "Downtown; 90% city coverage goal by end 2025",
+    "deployment_period": "2023-present",
     "data_quality": "sparse"
   }
 ]

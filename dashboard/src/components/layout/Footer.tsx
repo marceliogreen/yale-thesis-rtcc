@@ -5,7 +5,7 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-2 text-xs text-muted">
           <span>Marcel J. Green &middot; Yale University &middot; Cognitive Science &middot; 2026</span>
           <a
-            href="https://github.com/greenmagic6/green-academic-md"
+            href="https://github.com/greenmagic6/yale-thesis-rtcc"
             target="_blank"
             rel="noopener noreferrer"
             className="text-yale hover:underline"
