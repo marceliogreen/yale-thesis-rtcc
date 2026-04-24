@@ -40,7 +40,8 @@ def validate_clearance_rates(df: pd.DataFrame, rate_column: str = "clearance_rat
     # Check for out-of-range values
     invalid_mask = (rates < 0) | (rates > 1)
     if invalid_mask.any():
-        invalid_rows = df[invalid_mask]
+        invalid_index = rates[invalid_mask].index
+        invalid_rows = df.loc[invalid_index]
         raise DataValidationError(
             f"Clearance rates outside [0,1] range:\n{invalid_rows[[rate_column]].head()}\n"
             f"Total invalid rows: {invalid_mask.sum()}"
@@ -173,10 +174,12 @@ def validate_panel_structure(df: pd.DataFrame) -> Tuple[int, int]:
     actual_rows = len(df)
     
     if actual_rows < expected_rows:
+        year_min = int(df['year'].min())
+        year_max = int(df['year'].max())
         logger.warning(
             f"Unbalanced panel: {actual_rows} rows vs {expected_rows} expected "
             f"({n_cities} cities × {n_years} years). "
-            f"{''.join([y for y in range(df['year'].min(), df['year'].max()+1)])} years"
+            f"Year span: {year_min}-{year_max}"
         )
     else:
         logger.info(f"✓ Balanced panel validated: {n_cities} cities × {n_years} years = {actual_rows} rows")

@@ -23,22 +23,22 @@ import numpy as np
 import pandas as pd
 import statsmodels.formula.api as smf
 from sklearn.neighbors import NearestNeighbors
-from sklearn.preprocessing import StandardScaler
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 project_root_str = str(PROJECT_ROOT)
 if project_root_str not in sys.path:
     sys.path.insert(0, project_root_str)
 
-from pipeline.config import DATA_CONFIG
+from pipeline.config import DATA_CONFIG, PSM_CONFIG, RTCC_CONFIG, RESULTS_CONFIG
 from pipeline.data.build_submission_artifacts import write_psm_status_file
+from pipeline.utils import compute_psm_smd, print_psm_balance_table
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
 BASE_DIR = Path(__file__).parent.parent
 INPUT_PANEL = DATA_CONFIG.master_panel_v2_csv
-OUTPUT_DIR = BASE_DIR / "pipeline" / "results" / "study1_rtcc" / "tables"
+OUTPUT_DIR = RESULTS_CONFIG.study1_tables_dir
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 # ── Configuration ──────────────────────────────────────────────
@@ -47,7 +47,7 @@ OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 TREATED_TIERS = {"primary", "reference"}
 
 # DiD sample restriction
-MIN_YEAR = 2010
+MIN_YEAR = RTCC_CONFIG.start_year
 
 # LEMAS controls for the regression
 LEMAS_CONTROLS = [
@@ -62,7 +62,7 @@ LEMAS_CONTROLS = [
 MATCH_FEATURES = ["propensity_score"]
 
 # Caliper for matching (max PS distance)
-CALIPER = 0.05
+CALIPER = PSM_CONFIG.caliper
 
 
 def load_panel() -> pd.DataFrame:
@@ -191,13 +191,6 @@ def propensity_score_matching(sample: pd.DataFrame) -> pd.DataFrame:
     matched_sample["is_psm_matched"] = 1
     logger.info(f"  Matched sample: {len(matched_sample)} obs")
 
-    # Balance check
-    logger.info("  Balance check:")
-    for feat in ["propensity_score", "officers_per_10k", "tech_score"]:
-        t_mean = matched_sample[matched_sample["treated"] == 1][feat].mean()
-        c_mean = matched_sample[matched_sample["treated"] == 0][feat].mean()
-        logger.info(f"    {feat}: treated={t_mean:.3f}, control={c_mean:.3f}, diff={t_mean-c_mean:+.3f}")
-
     return matched_sample
 
 
@@ -316,6 +309,29 @@ def main():
 
     # Propensity score matching
     matched_sample = propensity_score_matching(sample)
+
+    # Formal covariate balance diagnostics (SMD before/after matching)
+    if "is_psm_matched" in matched_sample.columns:
+        matched_only = matched_sample[matched_sample["is_psm_matched"] == 1].copy()
+    else:
+        matched_only = matched_sample.copy()
+
+    smd_covariates = [
+        c for c in ["propensity_score", *LEMAS_CONTROLS]
+        if c in sample.columns and c in matched_only.columns
+    ]
+
+    if smd_covariates:
+        smd_results = compute_psm_smd(
+            unmatched_data=sample,
+            matched_data=matched_only,
+            covariates=smd_covariates,
+            treated_col="treated",
+            threshold=0.1,
+        )
+        print_psm_balance_table(smd_results, threshold=0.1)
+    else:
+        logger.warning("No valid covariates available for SMD diagnostics.")
 
     # Main DiD regression (full sample)
     main_result = run_did_regression(sample, "full_sample")

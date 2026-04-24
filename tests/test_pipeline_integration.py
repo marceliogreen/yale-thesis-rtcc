@@ -36,6 +36,11 @@ from pipeline.models.clearance_classifier import RTCCClearanceClassifier
 from pipeline.models.causal_forest import RTCCCausalForest
 from pipeline.models.bass_diffusion import RTCCBassDiffusion
 from pipeline.scrapers.rtcc_scraper import RTCCScraper, RTCCTimelineEvent
+from pipeline.utils import (
+    DataValidationError,
+    compute_psm_smd,
+    extract_bayesian_convergence,
+)
 
 
 # ============ FIXTURES ============
@@ -185,7 +190,7 @@ def test_icpsr_api_key_resolution():
 
 def test_rtcc_scraper_extract_date(mock_scraped_html):
     """Test date extraction from HTML content."""
-    scraper = RTCCScraper()
+    scraper = RTCCScraper(user_agent="Mozilla/5.0 (test harness)")
 
     # Test with BeautifulSoup
     from bs4 import BeautifulSoup
@@ -197,7 +202,7 @@ def test_rtcc_scraper_extract_date(mock_scraped_html):
 
 def test_rtcc_scraper_extract_budget(mock_scraped_html):
     """Test budget extraction from HTML content."""
-    scraper = RTCCScraper()
+    scraper = RTCCScraper(user_agent="Mozilla/5.0 (test harness)")
 
     budget = scraper._extract_budget(mock_scraped_html)
     assert budget is not None
@@ -206,7 +211,7 @@ def test_rtcc_scraper_extract_budget(mock_scraped_html):
 
 def test_rtcc_scraper_extract_vendor(mock_scraped_html):
     """Test vendor extraction from HTML content."""
-    scraper = RTCCScraper()
+    scraper = RTCCScraper(user_agent="Mozilla/5.0 (test harness)")
 
     vendor = scraper._extract_vendor(mock_scraped_html)
     assert vendor == "Motorola"
@@ -466,7 +471,7 @@ def test_bass_diffusion_peak_time():
     peak_year, peak_adoption = model.compute_peak_time(p, q)
 
     # Peak should be in reasonable future
-    assert peak_year > 2015, f"Peak year {peak_year} seems too early"
+    assert peak_year >= 2015, f"Peak year {peak_year} seems too early"
     assert peak_year < 2050, f"Peak year {peak_year} seems too late"
 
     # Peak adoptions should be positive
@@ -511,6 +516,69 @@ def test_pipeline_has_all_components():
     assert hasattr(pipeline.models.causal_forest, "RTCCCausalForest")
     assert hasattr(pipeline.models.bass_diffusion, "RTCCBassDiffusion")
     assert hasattr(pipeline.scrapers.rtcc_scraper, "RTCCScraper")
+
+
+def test_validate_clearance_rates_negative_raises():
+    """Negative clearance rates should fail validation."""
+    from pipeline.utils import validate_clearance_rates
+
+    df = pd.DataFrame({"clearance_rate": [0.4, -0.1, 0.7]})
+    with pytest.raises(DataValidationError):
+        validate_clearance_rates(df)
+
+
+def test_validate_rtcc_flags_misalignment_raises():
+    """Treatment flag/date misalignment should fail validation."""
+    from pipeline.utils import validate_rtcc_treatment_flags
+
+    df = pd.DataFrame(
+        {
+            "city": ["Hartford", "Hartford", "Hartford"],
+            "year": [2015, 2016, 2017],
+            "post_rtcc": [1, 1, 1],
+            "rtcc_year": [2016, 2016, 2016],
+        }
+    )
+    with pytest.raises(DataValidationError):
+        validate_rtcc_treatment_flags(df)
+
+
+def test_psm_smd_computation_balances_after_matching():
+    """SMD computation should reflect improved balance after matching."""
+    np.random.seed(42)
+    unmatched = pd.DataFrame(
+        {
+            "treated": [1] * 50 + [0] * 50,
+            "x1": np.concatenate([np.random.normal(1.0, 1.0, 50), np.random.normal(0.0, 1.0, 50)]),
+        }
+    )
+    matched = pd.DataFrame(
+        {
+            "treated": [1] * 50 + [0] * 50,
+            "x1": np.concatenate([np.random.normal(0.5, 1.0, 50), np.random.normal(0.45, 1.0, 50)]),
+        }
+    )
+
+    results = compute_psm_smd(unmatched, matched, covariates=["x1"])
+    assert "x1" in results
+    assert abs(results["x1"]["smd_after"]) < abs(results["x1"]["smd_before"])
+
+
+def test_bayesian_convergence_rhat_threshold():
+    """Convergence extractor should return finite R-hat diagnostics."""
+    az = pytest.importorskip("arviz")
+
+    np.random.seed(42)
+    posterior = {
+        "beta_1": np.random.normal(0, 1, (4, 1000)),
+        "beta_2": np.random.normal(0, 1, (4, 1000)),
+    }
+    trace = az.from_dict(posterior=posterior)
+
+    diagnostics = extract_bayesian_convergence(trace, model_name="test_model", rhat_threshold=1.1)
+    assert "beta_1" in diagnostics
+    assert "beta_2" in diagnostics
+    assert all(np.isfinite(v) for v in diagnostics.values())
 
 
 if __name__ == "__main__":

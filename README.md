@@ -1,94 +1,190 @@
-# RTCC Thesis: Advancing Computational Perception toward Cognitive-Grounded Prediction
+# Yale RTCC Thesis Repository
 
-**Marcel J. Green** | Yale University | Cognitive Science Program | Class of 2026
+Marcel J. Green, Yale University (Cognitive Science), Class of 2026
 
-Evaluating the efficiency of Real-Time Crime Centers and emerging technology across two studies: RTCC effectiveness on homicide clearance (Study 1) and drone-as-first-responder programs through a cognitive science lens (Study 2).
+This repository contains the full computational workflow for two linked studies:
 
-## Interactive Dashboard
+1. Study 1: Real-Time Crime Centers (RTCCs) and homicide clearance outcomes.
+2. Study 2: Drone-as-First-Responder (DFR) program analysis through a cognitive science framework.
 
-**[dashboard-alpha-pearl-55.vercel.app](https://dashboard-alpha-pearl-55.vercel.app)**
+The project is organized for thesis reviewers who want both fast orientation and full auditability.
 
+## Dashboard
 
+Interactive results explorer:
 
-All results, charts, methodology, and code traceability available interactively. No setup required.
+https://dashboard-alpha-pearl-55.vercel.app
 
-## Repository Structure
+## Reviewer Quick Start
 
-```
-yale-thesis-rtcc/
-├── pipeline/
-│   ├── run_study1.py              # Study 1 orchestrator
-│   ├── run_psm_did.py             # PSM-DiD estimation
-│   ├── run_classifier.py          # Classifier orchestrator
-│   ├── run_shap_causal.py         # SHAP + causal forest
-│   ├── clearance_analysis.py      # Clearance rate pipeline
-│   ├── models/
-│   │   ├── bayesian_its.py        # Bayesian ITS (PyMC)
-│   │   ├── monte_carlo.py         # Monte Carlo bootstrap
-│   │   ├── prophet_forecast.py    # Prophet counterfactual
-│   │   ├── clearance_classifier.py # XGBoost/RF/LR + SHAP
-│   │   ├── causal_forest.py       # EconML causal forest
-│   │   └── bass_diffusion.py      # Bass diffusion forecast
-│   ├── analysis/
-│   │   ├── robustness_01_event_study.py
-│   │   ├── robustness_02_matching_balance.py
-│   │   ├── robustness_03_sensitivities.py
-│   │   ├── robustness_04_covid_weighted_binomial.py
-│   │   ├── robustness_05_extended_its.py
-│   │   ├── robustness_06_ml_pipeline.py
-│   │   └── video_benchmark.py     # Study 2 video analysis
-│   ├── data/
-│   │   ├── fbi_api_client.py      # FBI CDE / BJS / ICPSR
-│   │   ├── comparison_pool.py     # 371 comparison cities
-│   │   ├── build_panel_v2.py      # Master panel builder
-│   │   └── lemas_integration.py   # LEMAS covariates
-│   └── scrapers/
-│       ├── rtcc_scraper.py        # RTCC launch date scraper
-│       └── dfr_scraper.py         # DFR program data
-├── results/
-│   ├── study1_rtcc/               # All Study 1 outputs
-│   └── study2_dfr/                # All Study 2 outputs
-├── figures/                       # Thesis figures (PNG)
-├── dashboard/                     # Interactive Next.js dashboard
-├── appendix-code-summary.md       # Full code traceability
-└── requirements.txt
-```
+If you only have 10-15 minutes, follow this order:
 
-## Key Findings
+1. Read this README for design and reproducibility assumptions.
+2. Open appendix-code-summary.md for figure/table traceability.
+3. Inspect pipeline/config.py for centralized model and threshold settings.
+4. Run the preflight-integrated orchestration command below.
+5. Confirm generated outputs in results/study1_rtcc and results/study2_dfr.
 
-| Finding | Value | Method |
-|---------|-------|--------|
-| PSM-DiD ATT (primary) | Not reproducible from current repo snapshot | `run_psm_did.py` requires missing `data/master_analysis_panel_v2.csv` |
-| Monte Carlo bootstrap mean | -17.7 pp | Parametric bootstrap (10,000 iter) |
-| Homicide-weighted ITS sensitivity | -14.1 pp (p < 0.001) | `robustness_04_covid_weighted_binomial.py` |
-| ITS pooled level change | -0.178 (p = 0.606) | Bayesian ITS (15 cities) |
-| Cognitive predictions | 16 / 18 supported | Cross-city cognitive framework |
+## Reproducibility Setup
 
-**The reproducible Study 1 results in this repo snapshot do not show a statistically significant positive effect of RTCC adoption on clearance rates.**
+### Environment
 
-## Reproduction
+Tested with Python 3.10+ on macOS/Linux.
 
 ```bash
 git clone https://github.com/greenmagic6/yale-thesis-rtcc.git
 cd yale-thesis-rtcc
+python -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
-python pipeline/run_study1.py   
 ```
 
-See `appendix-code-summary.md` for full traceability of every figure, table, and numerical estimate.
+### Core Run Commands
+
+Run Study 1 end-to-end:
+
+```bash
+python pipeline/run_study1.py
+```
+
+Run specific Study 1 step:
+
+```bash
+python pipeline/run_study1.py --step its
+python pipeline/run_study1.py --step classifier
+python pipeline/run_study1.py --step prophet
+python pipeline/run_study1.py --step monte_carlo
+```
+
+Run PSM-DiD directly:
+
+```bash
+python pipeline/run_psm_did.py
+```
+
+Run test suite:
+
+```bash
+pytest -q
+```
+
+## Methodological Configuration (Centralized)
+
+All major assumptions and thresholds are centralized in pipeline/config.py.
+
+Examples:
+
+1. RTCC treatment years and city metadata.
+2. PSM caliper and covariate sets.
+3. Bayesian sampling defaults and convergence threshold.
+4. Output and data path conventions.
+
+This design reduces hidden constants and makes replication checks explicit.
+
+## Built-In Quality Gates
+
+The pipeline now enforces diagnostics needed for defensible thesis review.
+
+### 1) Preflight data validation
+
+pipeline/run_study1.py runs a panel validation stage before modeling.
+
+Validation coverage includes:
+
+1. Clearance rate range checks (must be between 0 and 1).
+2. RTCC flag/date alignment checks.
+3. Zero-homicide frequency warnings.
+4. Panel structure checks.
+5. Minimum time-series length checks.
+6. Covariate missingness checks (when covariates are available).
+
+### 2) PSM balance diagnostics
+
+pipeline/run_psm_did.py now computes standardized mean differences (SMD)
+before and after matching and prints a balance table.
+
+Criterion enforced: absolute SMD < 0.1 on matched sample covariates.
+
+### 3) Bayesian convergence diagnostics
+
+pipeline/models/bayesian_its.py now applies centralized sampling settings and
+computes R-hat diagnostics from posterior traces.
+
+Criterion enforced: R-hat <= 1.01.
+
+If convergence fails, the pipeline raises a typed convergence exception.
+
+## Repository Layout
+
+```text
+yale-thesis-rtcc/
+	pipeline/
+		run_study1.py
+		run_psm_did.py
+		run_classifier.py
+		run_shap_causal.py
+		models/
+			bayesian_its.py
+			prophet_forecast.py
+			monte_carlo.py
+			clearance_classifier.py
+			causal_forest.py
+			bass_diffusion.py
+		data/
+		analysis/
+		scrapers/
+		utils/
+			validators.py
+			diagnostics.py
+			exceptions.py
+	data/
+	results/
+		study1_rtcc/
+		study2_dfr/
+	figures/
+	dashboard/
+	tests/
+	appendix-code-summary.md
+	requirements.txt
+```
 
 ## Data Sources
 
-- **UCR Return A** — ICPSR 100707-V22 (Kaplan)
-- **FBI CDE API** — Homicide counts by agency
-- **LEMAS 2020** — Agency characteristics
-- **ACS 5-Year** — Census demographics
-- **Washington Post** — Homicide database (2007-2017)
+Primary inputs used across analyses:
 
-## Methods
+1. UCR Return A (ICPSR / Kaplan integration).
+2. FBI CDE API.
+3. LEMAS 2020 agency-level covariates.
+4. ACS 5-year socioeconomic covariates.
+5. Washington Post homicide dataset.
 
-Bayesian ITS, PSM-DiD, Monte Carlo bootstrap, Prophet counterfactuals, XGBoost with SHAP, EconML causal forest, event study, and 10 robustness specifications.
+Detailed source notes and caveats are in data/DATA_SOURCES.md.
+
+## Key Outputs
+
+Study 1 outputs are written to results/study1_rtcc, including:
+
+1. Bayesian ITS summaries and figures.
+2. PSM-DiD tables.
+3. Counterfactual and robustness outputs.
+4. Intermediate diagnostic artifacts.
+
+Study 2 outputs are written to results/study2_dfr.
+
+## Known Scope Limits
+
+This repository is research-oriented, not a production package.
+
+Some historical intermediate files referenced by legacy scripts may not be
+committed in every snapshot. When that happens, scripts now fail with clearer
+messages and status artifacts rather than silent degradation.
+
+## Citation and Contact
+
+If citing this work, reference the Yale undergraduate thesis and this repository commit.
+
+For data access or replication clarification, contact the repository author.
 
 ## License
 
-Research code. Contact author for data access inquiries.
+Research code for academic use.

@@ -11,6 +11,13 @@ from .validators import (
     DataValidationError,
 )
 
+from .diagnostics import (
+    compute_psm_smd,
+    print_psm_balance_table,
+    extract_bayesian_convergence,
+    print_bayesian_convergence,
+)
+
 from .exceptions import (
     RTCCPipelineError,
     DataError,
@@ -34,6 +41,11 @@ __all__ = [
     "validate_time_series_length",
     "validate_analysis_panel",
     "DataValidationError",
+    # Diagnostics
+    "compute_psm_smd",
+    "print_psm_balance_table",
+    "extract_bayesian_convergence",
+    "print_bayesian_convergence",
     # Exceptions
     "RTCCPipelineError",
     "DataError",

@@ -21,6 +21,8 @@ import sys
 import time
 from pathlib import Path
 
+import pandas as pd
+
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
@@ -29,7 +31,37 @@ project_root_str = str(PROJECT_ROOT)
 if project_root_str not in sys.path:
     sys.path.insert(0, project_root_str)
 
+from pipeline.config import DATA_CONFIG, PSM_CONFIG, RTCC_CONFIG
+from pipeline.utils import validate_analysis_panel
+
 RESULTS_BASE = Path(__file__).parent.parent / "results" / "study1_rtcc"
+
+
+def run_preflight_validation() -> None:
+    """Validate panel assumptions before running Study 1 models."""
+    panel_path = DATA_CONFIG.analysis_ready_panel_csv
+    if not panel_path.exists():
+        panel_path = DATA_CONFIG.master_panel_csv
+
+    if not panel_path.exists():
+        logger.warning("No panel file found for preflight validation; skipping validation step.")
+        return
+
+    logger.info("Running preflight data validation on %s", panel_path)
+    df = pd.read_csv(panel_path, low_memory=False)
+
+    candidate_covariates = [*PSM_CONFIG.pscore_controls, *PSM_CONFIG.outcome_controls]
+    available_covariates = [c for c in candidate_covariates if c in df.columns]
+
+    validate_analysis_panel(
+        df,
+        {
+            "clearance_rate_col": "clearance_rate",
+            "homicide_col": "homicides",
+            "covariates": available_covariates,
+            "min_years": RTCC_CONFIG.pretreatment_years,
+        },
+    )
 
 
 def step_its():
@@ -92,6 +124,12 @@ def main():
         steps_to_run = [args.step]
 
     start_time = time.time()
+
+    try:
+        run_preflight_validation()
+    except Exception as e:
+        logger.error("Preflight validation failed: %s", e)
+        raise
 
     for step_name in steps_to_run:
         step_start = time.time()

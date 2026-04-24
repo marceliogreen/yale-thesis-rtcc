@@ -31,7 +31,8 @@ project_root_str = str(PROJECT_ROOT)
 if project_root_str not in sys.path:
     sys.path.insert(0, project_root_str)
 
-from pipeline.config import DATA_CONFIG, RTCC_CONFIG, get_rtcc_years
+from pipeline.config import DATA_CONFIG, RTCC_CONFIG, BAYESIAN_ITS_CONFIG, get_rtcc_years
+from pipeline.utils import extract_bayesian_convergence, print_bayesian_convergence
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -152,8 +153,10 @@ def run_bayesian_its_pymc(df: pd.DataFrame, results_dir: Path) -> Dict:
 
         # Sample
         trace = pm.sample(
-            2000, tune=1000, chains=4,
-            target_accept=0.95,
+            BAYESIAN_ITS_CONFIG.draws,
+            tune=BAYESIAN_ITS_CONFIG.tune,
+            chains=4,
+            target_accept=BAYESIAN_ITS_CONFIG.target_accept,
             return_inferencedata=True,
             random_seed=42,
         )
@@ -161,6 +164,14 @@ def run_bayesian_its_pymc(df: pd.DataFrame, results_dir: Path) -> Dict:
     # Summaries
     summary = az.summary(trace, var_names=["beta_1", "beta_2", "beta_3", "mu_alpha", "sigma"])
     logger.info(f"\nPosterior summary:\n{summary}")
+
+    # Convergence diagnostics required for thesis reproducibility checks.
+    convergence = extract_bayesian_convergence(
+        trace,
+        model_name="BayesianITS",
+        rhat_threshold=BAYESIAN_ITS_CONFIG.rhat_threshold,
+    )
+    print_bayesian_convergence(convergence, rhat_threshold=BAYESIAN_ITS_CONFIG.rhat_threshold)
 
     # Per-city intercepts
     city_summary = az.summary(trace, var_names=["alpha"])
@@ -180,6 +191,7 @@ def run_bayesian_its_pymc(df: pd.DataFrame, results_dir: Path) -> Dict:
         "trace": trace,
         "summary": summary,
         "city_summary": city_summary,
+        "convergence": convergence,
     }
 
 
