@@ -1,0 +1,74 @@
+[
+  {
+    "variable": "est_population",
+    "label": "Population",
+    "treated_mean": 949848.5776237107,
+    "treated_sd": 778819.0110003328,
+    "control_mean": 158686.1175,
+    "control_sd": 54476.60202177347,
+    "smd": 1.4331257003593576,
+    "balance": "SEVERE",
+    "n_treated": 13,
+    "n_control": 400
+  },
+  {
+    "variable": "homicides",
+    "label": "Homicides (2020)",
+    "treated_mean": 232.66666666666666,
+    "treated_sd": 193.3958519605722,
+    "control_mean": 10.5175,
+    "control_sd": 18.60388921032374,
+    "smd": 1.6170087370375164,
+    "balance": "SEVERE",
+    "n_treated": 15,
+    "n_control": 400
+  },
+  {
+    "variable": "tech_score",
+    "label": "Technology Score",
+    "treated_mean": 8.333333333333334,
+    "treated_sd": 1.1126972805283735,
+    "control_mean": 0,
+    "control_sd": 0,
+    "smd": 0,
+    "balance": "NO COMPARISON DATA",
+    "n_treated": 15,
+    "n_control": 0
+  },
+  {
+    "variable": "data_driven_score",
+    "label": "Data-Driven Score",
+    "treated_mean": 6.533333333333333,
+    "treated_sd": 0.5163977794943223,
+    "control_mean": 0,
+    "control_sd": 0,
+    "smd": 0,
+    "balance": "NO COMPARISON DATA",
+    "n_treated": 15,
+    "n_control": 0
+  },
+  {
+    "variable": "has_bwc",
+    "label": "Body-Worn Camera",
+    "treated_mean": 1,
+    "treated_sd": 0,
+    "control_mean": 0,
+    "control_sd": 0,
+    "smd": 0,
+    "balance": "NO COMPARISON DATA",
+    "n_treated": 15,
+    "n_control": 0
+  },
+  {
+    "variable": "budget_per_capita",
+    "label": "Budget Per Capita",
+    "treated_mean": 497.3390602608393,
+    "treated_sd": 167.08732958365485,
+    "control_mean": 0,
+    "control_sd": 0,
+    "smd": 0,
+    "balance": "NO COMPARISON DATA",
+    "n_treated": 15,
+    "n_control": 0
+  }
+]

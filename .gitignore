@@ -52,6 +52,12 @@ downloads/
 .ipynb_checkpoints/
 *.ipynb
 
+# ── Dashboard ──
+dashboard/node_modules/
+dashboard/.next/
+dashboard/out/
+dashboard/.vercel/
+
 # ── Other ──
 htmlcov/
 .coverage

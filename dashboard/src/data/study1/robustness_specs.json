@@ -1,0 +1,134 @@
+[
+  {
+    "specification": "ITS: Full sample (2007-2017)",
+    "intercept": 0.5054356465945047,
+    "time_coeff": 0.0051140192719775065,
+    "level_change": -0.10920031150737004,
+    "trend_change": 0.008321337026208206,
+    "level_change_se": 0.07968380362819955,
+    "level_change_p": 0.17583665145106964,
+    "r_squared": 0.04135872419447473,
+    "n_obs": 62
+  },
+  {
+    "specification": "ITS: Albuquerque",
+    "intercept": 0.7287058225273331,
+    "time_coeff": 0.014492753623188439,
+    "level_change": -0.11923396105547142,
+    "trend_change": -0.027300834431269322,
+    "level_change_se": 0.14458115230742322,
+    "level_change_p": 0.4558882397237531,
+    "r_squared": 0.48857695037769655,
+    "n_obs": 8
+  },
+  {
+    "specification": "ITS: Chicago",
+    "intercept": 0.2446830105945712,
+    "time_coeff": -0.014087351038849586,
+    "level_change": -0.10089216092136855,
+    "trend_change": -0.044076587319368275,
+    "level_change_se": 0.02708566240007876,
+    "level_change_p": 0.007407924245443217,
+    "r_squared": 0.9593466826977625,
+    "n_obs": 11
+  },
+  {
+    "specification": "ITS: Fresno",
+    "intercept": 0.8768114938283005,
+    "time_coeff": 0.0395415858651154,
+    "level_change": -0.1704622874790942,
+    "trend_change": -0.18423023055375998,
+    "level_change_se": 0.08325005074189015,
+    "level_change_p": 0.07981334420883303,
+    "r_squared": 0.8152500158231333,
+    "n_obs": 11
+  },
+  {
+    "specification": "ITS: Miami",
+    "intercept": 0.3223313491213215,
+    "time_coeff": -0.0231984978925488,
+    "level_change": 0.09139673070845308,
+    "trend_change": -0.09758072288667184,
+    "level_change_se": 0.06957937507906221,
+    "level_change_p": 0.23040721193554942,
+    "r_squared": 0.7942615477677665,
+    "n_obs": 11
+  },
+  {
+    "specification": "ITS: St. Louis",
+    "intercept": 0.5723089256883882,
+    "time_coeff": 0.007142115972429441,
+    "level_change": -0.17534510331953482,
+    "trend_change": -0.03274363481511639,
+    "level_change_se": 0.0448137422444772,
+    "level_change_p": 0.005802849097013073,
+    "r_squared": 0.9024848569729327,
+    "n_obs": 11
+  },
+  {
+    "specification": "ITS: Unweighted",
+    "intercept": 0.5054356465945047,
+    "time_coeff": 0.0051140192719775065,
+    "level_change": -0.10920031150737004,
+    "trend_change": 0.008321337026208206,
+    "level_change_se": 0.07968380362819955,
+    "level_change_p": 0.17583665145106964,
+    "r_squared": 0.04135872419447473,
+    "n_obs": 62
+  },
+  {
+    "specification": "ITS: Homicide-weighted (WLS)",
+    "intercept": 0.276966517564097,
+    "time_coeff": -0.012255562764969946,
+    "level_change": -0.14073129845206978,
+    "trend_change": 0.05052089546240558,
+    "level_change_se": 0.03654206633067246,
+    "level_change_p": 0.0002959277681199425,
+    "r_squared": 0.7962829953794328,
+    "n_obs": 62
+  },
+  {
+    "specification": "ITS: Equal-weight per city",
+    "intercept": 0.5277287967510168,
+    "time_coeff": 0.008482635258765456,
+    "level_change": -0.10927601567836766,
+    "trend_change": 0.010937523694326833,
+    "level_change_se": 0.07855329614385294,
+    "level_change_p": 0.16950670212324806,
+    "r_squared": 0.2918638636816858,
+    "n_obs": 62
+  },
+  {
+    "specification": "Linear: clearance_rate",
+    "intercept": 0.5054356465945047,
+    "time_coeff": 0.0051140192719775065,
+    "level_change": -0.10920031150737004,
+    "trend_change": 0.008321337026208206,
+    "level_change_se": 0.07968380362819955,
+    "level_change_p": 0.17583665145106964,
+    "r_squared": 0.04135872419447473,
+    "n_obs": 62
+  },
+  {
+    "specification": "Logit: log(p/(1-p))",
+    "intercept": 0.05349683690481629,
+    "time_coeff": 0.02550509871112342,
+    "level_change": -0.5684478860583209,
+    "trend_change": 0.046792829886000795,
+    "level_change_se": 0.36270525000526915,
+    "level_change_p": 0.12249765826187393,
+    "r_squared": 0.053709850521905134,
+    "n_obs": 62
+  },
+  {
+    "specification": "Arcsine-sqrt: asin(sqrt(p))",
+    "intercept": 0.7943048033828319,
+    "time_coeff": 0.005673328417945669,
+    "level_change": -0.12352078512641751,
+    "trend_change": 0.009736707695009674,
+    "level_change_se": 0.0845147075382506,
+    "level_change_p": 0.1492670470226819,
+    "r_squared": 0.04691201634647768,
+    "n_obs": 62
+  }
+]

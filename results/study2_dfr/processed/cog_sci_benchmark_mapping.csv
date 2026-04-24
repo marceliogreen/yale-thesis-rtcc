@@ -1,0 +1,13 @@
+data_point,city,cognitive_theory,key_author,prediction,data_available,status
+avg_response_time,,Endsley Situation Awareness,"Endsley (1995, 2015)","Faster aerial arrival ≠ better situational comprehension. Response time measures detection (SA Level 1), not understanding (SA Level 2).",True,testable
+avg_response_time,Chula Vista,Endsley SA + Response Time,Endsley (1995),234 sec avg response is fast for aerial arrival but measures Level 1 only. No data on Level 2/3 outcomes.,True,testable
+avg_response_time,Elizabeth,Endsley SA + Response Time,Endsley (1995),94 sec avg response is exceptionally fast — 2.5x faster than Chula Vista. Tests whether speed correlates with mission success.,True,testable
+mission_duration,,Mackworth Vigilance Decrement,Mackworth (1948); Warm et al. (2008),Missions >20 min should show degraded operator performance. Avg flight time 172 sec (Chula Vista) is below threshold — good.,True,testable
+total_missions,Chula Vista,Bargh Automaticity,Bargh et al. (1996); Ferguson & Bargh (2004),"10,000+ missions means operators have extensive experience — automaticity predicts faster but potentially biased threat evaluation.",True,testable
+total_missions,Elizabeth,Bargh Automaticity,Bargh et al. (1996),"1,390 deployments in 7 months — moderate experience. Automaticity may not yet be fully developed.",True,testable
+geospatial_deployment,,Tyler Procedural Justice,"Tyler (1990, 2004, 2008)",Concentrated DFR deployments in specific neighborhoods predict lower perceived legitimacy and reduced community cooperation.,False,pending_data
+video_anomaly_detection,,Warm Vigilance + Mackworth,Warm et al. (2008); Guidetti et al. (2023),"AI anomaly detection should show no time-dependent decrement (unlike human operators). If it does, reveals architectural bias.",False,pending_data
+skeleton_intent_attribution,,Heider-Simmel Intent Attribution,Heider & Simmel (1944),PoseC3D classifies actions from skeleton data — tests whether movement patterns alone carry sufficient intent signal.,False,pending_data
+event_segmentation_boundaries,,Zacks Event Segmentation,"Zacks et al. (2001, 2007)",Self-supervised VideoMAE should discover event boundaries matching human-annotated transitions in surveillance footage.,False,pending_data
+operator_experience_vs_success,,Gartenberg Vigilance Modulation,Gartenberg et al. (2018),Experienced operators maintain vigilance longer — DFR mission success rate should increase with operator tenure.,False,pending_data
+cincinnati_expansion_coverage,Cincinnati,Tyler Legitimacy + Endsley SA,Tyler (2004); Endsley (2015),90% city coverage goal → maximum surveillance visibility. Tests whether comprehensive coverage improves or degrades community trust.,True,qualitative

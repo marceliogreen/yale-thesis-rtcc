@@ -1,0 +1,7 @@
+city,modeled_year,verified_year,delta,action,data_start,data_end,modeled_pre_n,modeled_post_n,verified_pre_n,verified_post_n,pre_period_available,modeled_pre_mean_cr,modeled_post_mean_cr
+Chicago,2017,2016,-1,shift,2007,2017,10,1,9,2,True,0.2979868741772574,0.0856269113149847
+St. Louis,2015,2014,-1,shift,2007,2017,8,3,7,4,True,0.5265541540738365,0.34266539213976305
+Miami,2016,2015,-1,shift,2007,2017,9,2,8,3,True,0.4283727954067525,0.21864406779661016
+New Orleans,2017,2017,0,keep,2008,2017,9,1,9,1,True,0.3878452250814546,0.294478527607362
+Albuquerque,2013,2005,-15,DROP,2010,2017,3,5,0,8,False,0.699720315280956,0.5838556998557
+Fresno,2015,2007,-11,DROP,2007,2017,8,3,0,11,False,0.6988743574352818,0.5616605616605616

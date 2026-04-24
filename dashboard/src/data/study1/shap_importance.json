@@ -1,0 +1,42 @@
+[
+  {
+    "feature": "total_sworn",
+    "importance": 0.45370930433273315
+  },
+  {
+    "feature": "officers_per_10k_pe",
+    "importance": 0.22233551740646362
+  },
+  {
+    "feature": "homicides_per_sworn",
+    "importance": 0.10613849014043808
+  },
+  {
+    "feature": "budget_per_capita",
+    "importance": 0.07470500469207764
+  },
+  {
+    "feature": "est_population",
+    "importance": 0.06277170777320862
+  },
+  {
+    "feature": "tech_score",
+    "importance": 0.04909871891140938
+  },
+  {
+    "feature": "year",
+    "importance": 0.013406076468527317
+  },
+  {
+    "feature": "post_rtcc",
+    "importance": 0.012889367528259754
+  },
+  {
+    "feature": "data_driven_score",
+    "importance": 0.004945781547576189
+  },
+  {
+    "feature": "has_bwc",
+    "importance": 0
+  }
+]

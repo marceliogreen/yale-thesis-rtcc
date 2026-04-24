@@ -1,0 +1,26 @@
+[
+  {
+    "architecture": "slowfast",
+    "filename": "slowfast_k400_ucf_crime.py",
+    "description": "SlowFast for action recognition \u2014 maps to Endsley SA Level 2 (comprehension)",
+    "pretrained": "Kinetics-400",
+    "cog_sci_theory": "Endsley SA Level 2 \u2014 fast pathway captures rapid changes (detection), slow pathway captures semantics (comprehension)",
+    "config_path": "/Users/marcelinho/GitHub/green-academic-md/pipeline/models/mmaction2_configs/slowfast_k400_ucf_crime.py"
+  },
+  {
+    "architecture": "posec3d",
+    "filename": "posec3d_ucf_crime.py",
+    "description": "PoseC3D skeleton-based \u2014 maps to Heider-Simmel intent attribution",
+    "pretrained": "Kinetics-400 skeletons",
+    "cog_sci_theory": "Heider-Simmel \u2014 intent attribution from body movement patterns, stripped of appearance cues",
+    "config_path": "/Users/marcelinho/GitHub/green-academic-md/pipeline/models/mmaction2_configs/posec3d_ucf_crime.py"
+  },
+  {
+    "architecture": "videomae",
+    "filename": "videomae_ucf_crime.py",
+    "description": "VideoMAE self-supervised \u2014 maps to Zacks event segmentation",
+    "pretrained": "Kinetics-710 self-supervised",
+    "cog_sci_theory": "Zacks event segmentation \u2014 self-supervised learning discovers temporal boundaries without labels",
+    "config_path": "/Users/marcelinho/GitHub/green-academic-md/pipeline/models/mmaction2_configs/videomae_ucf_crime.py"
+  }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "city": "Chula Vista",
+    "state": "CA",
+    "response_time_sec": 234,
+    "response_time_min": 3.9,
+    "priority_level": "P1 (estimated)",
+    "flight_time_sec": 172,
+    "source": "Power BI dashboard / secondary sources",
+    "cog_sci_link": "Endsley SA Level 1 — fast detection"
+  },
+  {
+    "city": "Elizabeth",
+    "state": "NJ",
+    "response_time_sec": 94,
+    "response_time_min": 1.6,
+    "priority_level": "P1 + P2",
+    "flight_time_sec": null,
+    "source": "Policy document (General Order Vol 3 Ch 18)",
+    "cog_sci_link": "94s is 2.5x faster than Chula Vista — tests speed-accuracy tradeoff"
+  },
+  {
+    "city": "Cincinnati",
+    "state": "OH",
+    "response_time_sec": null,
+    "response_time_min": null,
+    "priority_level": "N/A",
+    "flight_time_sec": null,
+    "source": "No response time data available (program in expansion)",
+    "cog_sci_link": "Pending — FOIA request recommended"
+  }
+]

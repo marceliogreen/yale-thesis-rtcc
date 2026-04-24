@@ -1,0 +1,4 @@
+city,metric_name,metric_value,metric_unit,priority_level,time_period,source_url,scraped_at
+Chula Vista,avg_response_time,234.0,seconds,,,https://app.powerbigov.us/view?r=eyJrIjoiNWNiYmI5ZTEtMzVjZi00NjNjLTkzNzgtNjg5NDQ3Yzk1NzEzIiwidCI6IjU2ZmM0NjE4LWM4M2QtNDAxZS1hNTMxLWZlYTEyNGI2NDZhNyJ9,2026-04-15T20:45:02.001519
+Chula Vista,total_missions,10000.0,count,,,https://app.powerbigov.us/view?r=eyJrIjoiNWNiYmI5ZTEtMzVjZi00NjNjLTkzNzgtNjg5NDQ3Yzk1NzEzIiwidCI6IjU2ZmM0NjE4LWM4M2QtNDAxZS1hNTMxLWZlYTEyNGI2NDZhNyJ9,2026-04-15T20:45:02.001519
+Chula Vista,avg_flight_time,172.0,seconds,,,https://app.powerbigov.us/view?r=eyJrIjoiNWNiYmI5ZTEtMzVjZi00NjNjLTkzNzgtNjg5NDQ3Yzk1NzEzIiwidCI6IjU2ZmM0NjE4LWM4M2QtNDAxZS1hNTMxLWZlYTEyNGI2NDZhNyJ9,2026-04-15T20:45:02.001519

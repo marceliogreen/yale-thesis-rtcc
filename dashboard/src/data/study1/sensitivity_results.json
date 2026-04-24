@@ -1,0 +1,72 @@
+[
+  {
+    "att": -0.04296844327243234,
+    "se": 0.12978870365256986,
+    "t_stat": -0.33106458469185546,
+    "p_value": 0.7406001098504824,
+    "n_obs": 15740,
+    "n_treated": 62,
+    "n_control": 15678,
+    "specification": "Full comparison pool"
+  },
+  {
+    "att": -0.04296844327244345,
+    "se": 0.13020436625753254,
+    "t_stat": -0.33000769872383334,
+    "p_value": 0.7413986082069105,
+    "n_obs": 15491,
+    "n_treated": 62,
+    "n_control": 15429,
+    "specification": "Excluding contaminated controls"
+  },
+  {
+    "att": -0.04296844327244345,
+    "se": 0.13020436625753254,
+    "t_stat": -0.33000769872383334,
+    "p_value": 0.7413986082069105,
+    "n_obs": 15491,
+    "n_treated": 62,
+    "n_control": 15429,
+    "specification": "DiD baseline (no mediators)"
+  },
+  {
+    "att": -0.1783943154401363,
+    "se": 0.34523573411702496,
+    "t_stat": -0.5167318959504515,
+    "p_value": 0.6057497660884916,
+    "n_obs": 285,
+    "n_treated": 171,
+    "n_control": 114,
+    "specification": "RTCC ITS: log_homicides WITHOUT mediators"
+  },
+  {
+    "att": -0.19868989050025507,
+    "se": 0.31363873396195346,
+    "t_stat": -0.6334992109882625,
+    "p_value": 0.5269266611250232,
+    "n_obs": 285,
+    "n_treated": 171,
+    "n_control": 114,
+    "specification": "RTCC ITS: log_homicides WITH mediators"
+  },
+  {
+    "att": 5.873376623376651,
+    "se": 14.590277210206432,
+    "t_stat": 0.4025541488182287,
+    "p_value": 0.6929547773958509,
+    "n_obs": 19,
+    "n_treated": 11,
+    "n_control": 8,
+    "specification": "Fresno ITS: Continuous (post_rtcc)"
+  },
+  {
+    "att": -2.105367074197496,
+    "se": 10.305536603441613,
+    "t_stat": -0.20429475486937695,
+    "p_value": 0.84086921402197,
+    "n_obs": 19,
+    "n_treated": 9,
+    "n_control": 10,
+    "specification": "Fresno ITS: Discontinuous (rtcc_active)"
+  }
+]

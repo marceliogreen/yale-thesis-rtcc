@@ -1,0 +1,110 @@
+[
+  {
+    "data_point": "avg_response_time",
+    "city": null,
+    "cognitive_theory": "Endsley Situation Awareness",
+    "key_author": "Endsley (1995",
+    "prediction": "2015)",
+    "data_available": "Faster aerial arrival ≠ better situational comprehension. Response time measures detection (SA Level 1)",
+    "status": "not understanding (SA Level 2)."
+  },
+  {
+    "data_point": "avg_response_time",
+    "city": "Chula Vista",
+    "cognitive_theory": "Endsley SA + Response Time",
+    "key_author": "Endsley (1995)",
+    "prediction": "234 sec avg response is fast for aerial arrival but measures Level 1 only. No data on Level 2/3 outcomes.",
+    "data_available": true,
+    "status": "testable"
+  },
+  {
+    "data_point": "avg_response_time",
+    "city": "Elizabeth",
+    "cognitive_theory": "Endsley SA + Response Time",
+    "key_author": "Endsley (1995)",
+    "prediction": "94 sec avg response is exceptionally fast — 2.5x faster than Chula Vista. Tests whether speed correlates with mission success.",
+    "data_available": true,
+    "status": "testable"
+  },
+  {
+    "data_point": "mission_duration",
+    "city": null,
+    "cognitive_theory": "Mackworth Vigilance Decrement",
+    "key_author": "Mackworth (1948); Warm et al. (2008)",
+    "prediction": "Missions >20 min should show degraded operator performance. Avg flight time 172 sec (Chula Vista) is below threshold — good.",
+    "data_available": true,
+    "status": "testable"
+  },
+  {
+    "data_point": "total_missions",
+    "city": "Chula Vista",
+    "cognitive_theory": "Bargh Automaticity",
+    "key_author": "Bargh et al. (1996); Ferguson & Bargh (2004)",
+    "prediction": 10,
+    "data_available": "000+ missions means operators have extensive experience — automaticity predicts faster but potentially biased threat evaluation.",
+    "status": true
+  },
+  {
+    "data_point": "total_missions",
+    "city": "Elizabeth",
+    "cognitive_theory": "Bargh Automaticity",
+    "key_author": "Bargh et al. (1996)",
+    "prediction": 1,
+    "data_available": "390 deployments in 7 months — moderate experience. Automaticity may not yet be fully developed.",
+    "status": true
+  },
+  {
+    "data_point": "geospatial_deployment",
+    "city": null,
+    "cognitive_theory": "Tyler Procedural Justice",
+    "key_author": "Tyler (1990",
+    "prediction": 2004,
+    "data_available": "2008)",
+    "status": "Concentrated DFR deployments in specific neighborhoods predict lower perceived legitimacy and reduced community cooperation."
+  },
+  {
+    "data_point": "video_anomaly_detection",
+    "city": null,
+    "cognitive_theory": "Warm Vigilance + Mackworth",
+    "key_author": "Warm et al. (2008); Guidetti et al. (2023)",
+    "prediction": "AI anomaly detection should show no time-dependent decrement (unlike human operators). If it does",
+    "data_available": "reveals architectural bias.",
+    "status": false
+  },
+  {
+    "data_point": "skeleton_intent_attribution",
+    "city": null,
+    "cognitive_theory": "Heider-Simmel Intent Attribution",
+    "key_author": "Heider & Simmel (1944)",
+    "prediction": "PoseC3D classifies actions from skeleton data — tests whether movement patterns alone carry sufficient intent signal.",
+    "data_available": false,
+    "status": "pending_data"
+  },
+  {
+    "data_point": "event_segmentation_boundaries",
+    "city": null,
+    "cognitive_theory": "Zacks Event Segmentation",
+    "key_author": "Zacks et al. (2001",
+    "prediction": "2007)",
+    "data_available": "Self-supervised VideoMAE should discover event boundaries matching human-annotated transitions in surveillance footage.",
+    "status": false
+  },
+  {
+    "data_point": "operator_experience_vs_success",
+    "city": null,
+    "cognitive_theory": "Gartenberg Vigilance Modulation",
+    "key_author": "Gartenberg et al. (2018)",
+    "prediction": "Experienced operators maintain vigilance longer — DFR mission success rate should increase with operator tenure.",
+    "data_available": false,
+    "status": "pending_data"
+  },
+  {
+    "data_point": "cincinnati_expansion_coverage",
+    "city": "Cincinnati",
+    "cognitive_theory": "Tyler Legitimacy + Endsley SA",
+    "key_author": "Tyler (2004); Endsley (2015)",
+    "prediction": "90% city coverage goal → maximum surveillance visibility. Tests whether comprehensive coverage improves or degrades community trust.",
+    "data_available": true,
+    "status": "qualitative"
+  }
+]

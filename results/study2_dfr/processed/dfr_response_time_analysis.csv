@@ -1,0 +1,4 @@
+city,state,response_time_sec,response_time_min,priority_level,flight_time_sec,source,cog_sci_link
+Chula Vista,CA,234.0,3.9,P1 (estimated),172.0,Power BI dashboard / secondary sources,"Endsley SA Level 1 — fast detection, comprehension unknown"
+Elizabeth,NJ,94.0,1.6,P1 + P2,,Policy document (General Order Vol 3 Ch 18),94s is 2.5x faster than Chula Vista — tests speed-accuracy tradeoff
+Cincinnati,OH,,,N/A,,No response time data available (program in expansion),Pending — FOIA request recommended

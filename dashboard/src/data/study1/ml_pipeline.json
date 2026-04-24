@@ -1,0 +1,26 @@
+[
+  {
+    "model": "XGBoost",
+    "cv_r2": "-1.080 ± 2.169",
+    "shap_post_rtcc_mean": 0.002435108879581094,
+    "shap_post_rtcc_std": 0.026003560051321983,
+    "post_rtcc_coef": null,
+    "alpha": null
+  },
+  {
+    "model": "RandomForest",
+    "cv_r2": "-0.914 ± 1.956",
+    "shap_post_rtcc_mean": null,
+    "shap_post_rtcc_std": null,
+    "post_rtcc_coef": null,
+    "alpha": null
+  },
+  {
+    "model": "LASSO",
+    "cv_r2": null,
+    "shap_post_rtcc_mean": null,
+    "shap_post_rtcc_std": null,
+    "post_rtcc_coef": 0,
+    "alpha": 0.04153108037855308
+  }
+]

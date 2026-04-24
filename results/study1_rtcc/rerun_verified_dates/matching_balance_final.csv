@@ -1,0 +1,4 @@
+variable,treated_mean,control_mean,smd,treated_n,control_n
+Population,870365.8738121602,149659.47749816513,5.551369294372384,15,531
+Avg Homicides/Year,173.9859649122807,10.554515687522798,6.1447464840034485,15,531
+Officers per 10K (treated only),31.809432450792873,,,15,N/A (not in pool)

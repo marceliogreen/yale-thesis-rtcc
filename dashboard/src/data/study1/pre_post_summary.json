@@ -1,0 +1,74 @@
+[
+  {
+    "city": "Albuquerque",
+    "rtcc_year": 2013,
+    "pre_years": 3,
+    "post_years": 5,
+    "pre_homicides": 129,
+    "post_homicides": 249,
+    "pre_clearance": 0.6976744186046512,
+    "post_clearance": 0.570281124497992,
+    "change_pp": -12.739329410665922,
+    "change_pct": -18.259705488621158
+  },
+  {
+    "city": "Chicago",
+    "rtcc_year": 2017,
+    "pre_years": 10,
+    "post_years": 1,
+    "pre_homicides": 4881,
+    "post_homicides": 654,
+    "pre_clearance": 0.2880557262855972,
+    "post_clearance": 0.0856269113149847,
+    "change_pp": -20.24288149706125,
+    "change_pct": -70.27418533937124
+  },
+  {
+    "city": "Fresno",
+    "rtcc_year": 2015,
+    "pre_years": 8,
+    "post_years": 3,
+    "pre_homicides": 353,
+    "post_homicides": 134,
+    "pre_clearance": 0.6940509915014165,
+    "post_clearance": 0.5447761194029851,
+    "change_pp": -14.927487209843138,
+    "change_pct": -21.507767286018886
+  },
+  {
+    "city": "Miami",
+    "rtcc_year": 2016,
+    "pre_years": 9,
+    "post_years": 2,
+    "pre_homicides": 625,
+    "post_homicides": 119,
+    "pre_clearance": 0.4288,
+    "post_clearance": 0.2184873949579832,
+    "change_pp": -21.031260504201683,
+    "change_pct": -49.04678289226139
+  },
+  {
+    "city": "New Orleans",
+    "rtcc_year": 2017,
+    "pre_years": 9,
+    "post_years": 1,
+    "pre_homicides": 1271,
+    "post_homicides": 163,
+    "pre_clearance": 0.35877261998426435,
+    "post_clearance": 0.294478527607362,
+    "change_pp": -6.429409237690237,
+    "change_pct": -17.92056829189538
+  },
+  {
+    "city": "St. Louis",
+    "rtcc_year": 2015,
+    "pre_years": 8,
+    "post_years": 3,
+    "pre_homicides": 1101,
+    "post_homicides": 576,
+    "pre_clearance": 0.522252497729337,
+    "post_clearance": 0.3420138888888889,
+    "change_pp": -18.02386088404481,
+    "change_pct": -34.51177536231884
+  }
+]

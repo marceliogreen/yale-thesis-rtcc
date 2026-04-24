@@ -1,0 +1,4 @@
+model,cv_r2,shap_post_rtcc_mean,shap_post_rtcc_std,post_rtcc_coef,alpha
+XGBoost,-1.080 ± 2.169,0.002435108879581094,0.026003560051321983,,
+RandomForest,-0.914 ± 1.956,,,,
+LASSO,,,,-0.0,0.04153108037855308

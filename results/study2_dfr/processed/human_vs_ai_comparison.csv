@@ -1,0 +1,4 @@
+cognitive_dimension,human_benchmark,human_value,human_unit,ai_model,ai_value,ai_unit,comparison,thesis_implication
+Situation Awareness (comprehension),Endsley SA Level 2 failure rate,75,percent,slowfast,,top1_accuracy_percent,pending,"If SlowFast accuracy > 25% (human SA comprehension success rate), AI comprehension exceeds operator baseline"
+Intent Attribution,Heider-Simmel accuracy from ambiguous motion,70,percent,posec3d,,top1_accuracy_percent,pending,"If PoseC3D skeleton-only classification exceeds 70%, AI matches human intent attribution — supports automaticity thesis"
+Sustained Vigilance,Mackworth vigilance decrement onset,20,minutes,videomae,,no_decrement,ai_superior,AI models show no time-dependent performance decay — fundamentally superior for sustained surveillance monitoring

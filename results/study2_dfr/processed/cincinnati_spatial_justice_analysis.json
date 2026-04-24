@@ -1,0 +1,135 @@
+{
+  "analysis_type": "Spatial Justice Analysis — Cincinnati DFR",
+  "framework": "Tyler Procedural Justice (1990, 2004)",
+  "prediction": "Concentrated surveillance reduces perceived legitimacy (r ≈ 0.40), reducing community cooperation",
+  "timestamp": "2026-04-17",
+
+  "spatial_concentration": {
+    "centroid_lat": 39.1285,
+    "centroid_lon": -84.5421,
+    "spatial_std_lat": 0.0244,
+    "spatial_std_lon": 0.0351,
+    "concentration_index": 0.452,
+    "interpretation": "45.2% of 8,254 flights occur within 1σ of deployment center. If uniformly distributed, expected concentration would be ~39.3% (1σ of bivariate normal). The 45.2% observed exceeds uniform expectation, indicating spatial clustering.",
+    "one_sigma_coverage_km": {
+      "lat_km": 2.71,
+      "lon_km": 3.21,
+      "approximate_area_km2": 27.3
+    },
+    "tyler_predicted_effect": {
+      "mechanism": "Neighborhoods within 1σ experience disproportionate surveillance visibility",
+      "legitimacy_reduction_r": 0.40,
+      "note": "Tyler & Fagan (2008) find legitimacy-cooperation correlation of ~0.40. Communities perceiving concentrated surveillance as biased reduce tips, witness cooperation, and information sharing.",
+      "predicted_cooperation_decline": "Areas at deployment center show estimated ~40% correlation between surveillance concentration and reduced cooperation willingness"
+    }
+  },
+
+  "deployment_purpose_equity": {
+    "total_flights": 8254,
+    "surveillance_category_breakdown": {
+      "reactive_calls": {
+        "categories": ["Call for Service", "DISTURBANCE PHYS (IP)", "DISTURBANCE VERB (IP)", "ASSAULT (IP)", "DOMESTIC DIST PHYS (IP)", "BURG RESIDENTIAL (IP)"],
+        "total": 5100,
+        "pct": 61.8,
+        "legitimacy_impact": "Reactive — generally perceived as legitimate (responding to reported incidents)"
+      },
+      "proactive_surveillance": {
+        "categories": ["SUSPICIOUS PERSON (IP)", "SUSPICIOUS (SI)", "DIRECTED PATROL", "INVESTIGATION (SI)", "UNWANTED PERSON (IP)", "WANTED PERSON (IP)"],
+        "total": 440,
+        "pct": 5.3,
+        "legitimacy_impact": "Proactive — higher risk of perceived over-policing, especially 'suspicious person' categories"
+      },
+      "technology_triggered": {
+        "categories": ["SHOTSPOTTER ACTIVATION"],
+        "total": 265,
+        "pct": 3.2,
+        "legitimacy_impact": "Technology-triggered — ShotSpotter deployment is itself spatially concentrated in specific neighborhoods, compounding spatial equity concerns"
+      },
+      "administrative": {
+        "categories": ["FAMTRB", "STATION RUN_2", "DISORD", "TSTOP"],
+        "total": 427,
+        "pct": 5.2,
+        "legitimacy_impact": "Administrative — lower legitimacy impact"
+      },
+      "other": {
+        "categories": ["ALARM - COMMERCIAL INTRUSION", "RECKLESS ACTIVITY (IP)", "THREAT (IP)"],
+        "total": 175,
+        "pct": 2.1,
+        "legitimacy_impact": "Mixed — reactive but contributes to overall surveillance density"
+      }
+    },
+    "equity_assessment": "61.8% of flights are reactive (responding to calls), which is procedurally more defensible. However, the 5.3% proactive surveillance ('suspicious person', directed patrol) is concentrated in the same spatial cluster as reactive calls, compounding the legitimacy effect. ShotSpotter activations (3.2%) are deployed in specific neighborhoods, creating technology-driven spatial concentration."
+  },
+
+  "temporal_spatial_interaction": {
+    "nighttime_concentration": {
+      "pct_night_flights": 34.3,
+      "night_hours": "22:00-06:00",
+      "total_night_flights": 2831,
+      "legitimacy_concern": "Nighttime surveillance is perceived as more invasive and less transparent. 34.3% of flights occurring at night amplifies Tyler's legitimacy concerns — communities cannot observe or contest surveillance they are not aware of."
+    },
+    "peak_hours": {
+      "highest": "17:00-21:00 (avg ~561 flights/hour)",
+      "lowest": "08:00-11:00 (avg ~118 flights/hour)",
+      "legitimacy_note": "Peak drone activity during afternoon/evening hours means maximum surveillance visibility when residents are most active and aware of drone presence."
+    }
+  },
+
+  "shotspotter_compounding": {
+    "shotspotter_activations": 265,
+    "pct_of_total": 3.2,
+    "equity_concern": "ShotSpotter sensors are deployed in specific neighborhoods (typically low-income, minority communities). When a ShotSpotter activation triggers a drone response, it compounds spatial surveillance concentration. The drone adds aerial surveillance on top of acoustic surveillance in already heavily monitored areas.",
+    "tyler_prediction": "Residents in ShotSpotter + drone overlap zones experience the highest surveillance density and should show the strongest legitimacy erosion effects."
+  },
+
+  "tyler_four_pillars_assessment": {
+    "voice": {
+      "status": "absent",
+      "evidence": "No public comment process, community advisory board, or feedback mechanism documented for drone program",
+      "tyler_prediction": "Absence of voice mechanism reduces perceived procedural fairness"
+    },
+    "neutrality": {
+      "status": "concern",
+      "evidence": "Spatial concentration index 0.452 indicates non-uniform deployment; ShotSpotter + drone overlap compounds concentration",
+      "tyler_prediction": "Non-neutral deployment reduces perceived legitimacy, especially in over-surveilled neighborhoods"
+    },
+    "respect": {
+      "status": "partial",
+      "evidence": "Program announced publicly; no documented privacy impact assessment",
+      "tyler_prediction": "Lack of formal privacy protections undermines dignity perceptions"
+    },
+    "trustworthiness": {
+      "status": "unknown",
+      "evidence": "No published outcome data demonstrating effectiveness; 90% coverage expansion goal not justified with evidence",
+      "tyler_prediction": "Expanding surveillance without demonstrated effectiveness undermines trust in police competence"
+    }
+  },
+
+  "clearance_rate_implication": {
+    "mechanism": "Spatial concentration → legitimacy erosion → cooperation withdrawal → fewer leads → lower clearance",
+    "quantitative_chain": {
+      "step_1": "45.2% of flights concentrated within ~27 km² (1σ)",
+      "step_2": "Tyler predicts r ≈ 0.40 legitimacy-cooperation correlation",
+      "step_3": "Communities in high-density zone reduce tips and witness cooperation",
+      "step_4": "Fewer community-sourced leads → fewer solved cases",
+      "step_5": "Lower clearance rates in most heavily surveilled areas"
+    },
+    "study1_connection": "Study 1 finds β₂ = −0.095 (RTCC associated with clearance decline). The spatial justice mechanism provides a social-psychological pathway: surveillance investment → legitimacy erosion → cooperation withdrawal → clearance decline. This operates alongside the cognitive bottleneck mechanisms (vigilance, automaticity, SA) from the cognitive framework."
+  },
+
+  "data_limitations": [
+    "No community perception survey data for any Cincinnati neighborhood",
+    "No demographic data for deployment zones (census tract overlay needed)",
+    "Spatial concentration index is based on flight coordinates, not population-normalized deployment",
+    "ShotSpotter sensor locations not available (would enable overlap analysis)",
+    "No clearance rate data at neighborhood level to test legitimacy-cooperation pathway directly"
+  ],
+
+  "recommended_follow_up": [
+    "Census tract overlay: Map drone deployment density against demographic data to test equity hypothesis",
+    "Community survey: Tyler's legitimacy scale administered in high- vs low-deployment neighborhoods",
+    "ShotSpotter map acquisition: FOIA request for sensor locations to quantify technology compounding",
+    "Neighborhood-level clearance: Test whether high-surveillance neighborhoods show lower clearance rates",
+    "Time-series: Track cooperation metrics (911 calls, tips) before and after drone program expansion"
+  ]
+}

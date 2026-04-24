@@ -1,0 +1,69 @@
+{
+  "city": "Cincinnati",
+  "state": "OH",
+  "source": "City of Cincinnati official announcement",
+  "source_url": "https://www.cincinnati-oh.gov/cityofcincinnati/display-objects/banners/cpd-launches-drones-as-first-responders-program/",
+  "source_type": "announcement",
+  "scraped_at": "2026-04-15T00:00:00",
+  "program_details": {
+    "launch_date": "2023-04-17",
+    "program_status": "active",
+    "vendor": "Axon/Skydio",
+    "chief": "Teresa Theetge",
+    "department": "Cincinnati Police Department"
+  },
+  "technology_stack": {
+    "drones": "Skydio autonomous drones",
+    "live_monitoring": "Axon Fusus - real-time monitoring platform",
+    "video_storage": "Axon Evidence - cloud-based evidence management",
+    "airspace_awareness": "Dedrone - drone detection and airspace management"
+  },
+  "operational_details": {
+    "initial_coverage": "Downtown Cincinnati",
+    "expansion_goal": "90% city coverage by end of 2025",
+    "operator_certification": "FAA-certified operators",
+    "integration": "Integrated with existing Axon ecosystem"
+  },
+  "program_quotes": {
+    "chief_theetge": "Program aims to improve response times and officer safety by providing aerial awareness before units arrive on scene"
+  },
+  "known_metrics": {
+    "launch_date": "2023-04-17",
+    "vendor": "Axon/Skydio",
+    "program_status": "active",
+    "total_flights_enquirer": 8254,
+    "flight_date_range": "2025-03-19 to 2026-04-10",
+    "mean_flight_duration_min": 12.1,
+    "median_flight_duration_min": 12.2,
+    "max_flight_duration_min": 28.3,
+    "flights_over_20min_vigilance_threshold": 664,
+    "pct_flights_over_20min": 8.0,
+    "top_flight_purposes": {
+      "Call for Service": 4782,
+      "SHOTSPOTTER ACTIVATION": 265,
+      "SUSPICIOUS PERSON (IP)": 146,
+      "FAMTRB": 140,
+      "DISTURBANCE PHYS (IP)": 110
+    },
+    "spatial_concentration_index": 0.452,
+    "pct_night_flights": 34.3,
+    "flight_cfs_temporal_correlation_r": -0.166
+  },
+  "enquirer_cross_reference": {
+    "source": "Cincinnati Enquirer investigative data (David Ferrara)",
+    "drone_data_repo": "https://github.com/davidferrara23/enquirer-whatsthatdrone",
+    "crime_data_repo": "https://github.com/davidferrara23/enquirer-cpd-crime",
+    "arcgis_featureserver": "https://services7.arcgis.com/mnhQTdIYDA7UoY2l/arcgis/rest/services/b322b378-b726-4bd3-93fe-bab0b311191b-production/FeatureServer/0/query",
+    "socrata_api": "https://data.cincinnati-oh.gov/resource/gexm-h6bt.csv",
+    "matching_methodology": "50ft spatial buffer + 10min temporal window (Ferrara 2025)",
+    "analysis_file": "results/study2_dfr/processed/cincinnati_drone_crime_analysis.json"
+  },
+  "cog_sci_relevance": {
+    "vigilance": "8% of flights exceed Mackworth 20-min threshold — human operators would show degraded performance",
+    "spatial_concentration": "45.2% of flights within 1σ of center — Tyler predicts legitimacy concerns in heavily surveilled neighborhoods",
+    "temporal_pattern": "34.3% nighttime flights — Zacks event segmentation degrades in low-light conditions",
+    "automaticity": "8,254 flights provides extensive operator exposure — Bargh predicts automatic threat evaluation",
+    "sa_limitation": "Flight duration measures detection (SA Level 1), not comprehension (SA Level 2) — Endsley's 75% failure rate applies"
+  },
+  "notes": "Operational metrics significantly enriched by Cincinnati Enquirer investigative data (David Ferrara). ArcGIS FeatureServer provides real-time drone flight paths. FOIA request still recommended for officer-level response time and mission outcome data."
+}

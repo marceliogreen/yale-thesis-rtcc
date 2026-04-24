@@ -1,0 +1,61 @@
+[
+  {
+    "city": "Chula Vista",
+    "state": "CA",
+    "launch_date": "2020-01-01",
+    "program_status": "active",
+    "vendor": "Skydio",
+    "drone_models": null,
+    "fleet_size": null,
+    "coverage_area_sq_mi": null,
+    "total_missions": 10000,
+    "avg_response_time_sec": 234.0,
+    "avg_flight_time_sec": null,
+    "successful_missions": null,
+    "deployment_period": null,
+    "source_url": "https://www.chulavistaca.gov/departments/police/unmanned-aircraft-system-uas-program",
+    "source_type": "program_page",
+    "notes": null,
+    "scraped_at": "2026-04-15T20:45:02.001219"
+  },
+  {
+    "city": "Elizabeth",
+    "state": "NJ",
+    "launch_date": "2024-07-10",
+    "program_status": "active",
+    "vendor": "Skydio",
+    "drone_models": null,
+    "fleet_size": null,
+    "coverage_area_sq_mi": null,
+    "total_missions": 1390,
+    "avg_response_time_sec": 94.0,
+    "avg_flight_time_sec": null,
+    "successful_missions": null,
+    "deployment_period": null,
+    "source_url": "https://public.powerdms.com/ELIZABETH/documents/1989398",
+    "source_type": "program_page",
+    "notes": null,
+    "scraped_at": "2026-04-15T20:45:03.562716"
+  },
+  {
+    "city": "Cincinnati",
+    "state": "OH",
+    "launch_date": "2025-01-01",
+    "program_status": "active",
+    "vendor": "Skydio",
+    "drone_models": [
+      "Axon"
+    ],
+    "fleet_size": null,
+    "coverage_area_sq_mi": null,
+    "total_missions": null,
+    "avg_response_time_sec": null,
+    "avg_flight_time_sec": null,
+    "successful_missions": null,
+    "deployment_period": null,
+    "source_url": "https://www.cincinnati-oh.gov/cityofcincinnati/display-objects/banners/cpd-launches-drones-as-first-responders-program/",
+    "source_type": "program_page",
+    "notes": null,
+    "scraped_at": "2026-04-15T20:45:06.724944"
+  }
+]

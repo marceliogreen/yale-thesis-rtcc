@@ -1,0 +1,44 @@
+city,event_time,mean_cr,n,se,is_pre,is_reference,rtcc_year
+Chicago,-9,0.3797752808988764,1,,True,False,2016
+Chicago,-8,0.3725490196078431,1,,True,False,2016
+Chicago,-7,0.3391684901531728,1,,True,False,2016
+Chicago,-6,0.3110599078341013,1,,True,False,2016
+Chicago,-5,0.3043478260869565,1,,True,False,2016
+Chicago,-4,0.2693069306930693,1,,True,False,2016
+Chicago,-3,0.3144208037825059,1,,True,False,2016
+Chicago,-2,0.2990430622009569,1,,True,False,2016
+Chicago,-1,0.2464065708418891,1,,True,True,2016
+Chicago,0,0.1437908496732026,1,,False,False,2016
+Chicago,1,0.0856269113149847,1,,False,False,2016
+St. Louis,-7,0.4785714285714286,1,,True,False,2014
+St. Louis,-6,0.5209580838323353,1,,True,False,2014
+St. Louis,-5,0.5684931506849316,1,,True,False,2014
+St. Louis,-4,0.5704225352112676,1,,True,False,2014
+St. Louis,-3,0.6017699115044248,1,,True,False,2014
+St. Louis,-2,0.5535714285714286,1,,True,False,2014
+St. Louis,-1,0.512396694214876,1,,True,True,2014
+St. Louis,0,0.40625,1,,False,False,2014
+St. Louis,1,0.3494623655913978,1,,False,False,2014
+St. Louis,2,0.3617021276595745,1,,False,False,2014
+St. Louis,3,0.3168316831683168,1,,False,False,2014
+Miami,-8,0.5189873417721519,1,,True,False,2015
+Miami,-7,0.515625,1,,True,False,2015
+Miami,-6,0.35,1,,True,False,2015
+Miami,-5,0.5072463768115942,1,,True,False,2015
+Miami,-4,0.4084507042253521,1,,True,False,2015
+Miami,-3,0.4074074074074074,1,,True,False,2015
+Miami,-2,0.3768115942028985,1,,True,False,2015
+Miami,-1,0.3292682926829268,1,,True,True,2015
+Miami,0,0.4415584415584415,1,,False,False,2015
+Miami,1,0.2372881355932203,1,,False,False,2015
+Miami,2,0.2,1,,False,False,2015
+New Orleans,-9,0.5,1,,True,False,2017
+New Orleans,-8,0.5,1,,True,False,2017
+New Orleans,-7,0.4462365591397849,1,,True,False,2017
+New Orleans,-6,0.3744075829383886,1,,True,False,2017
+New Orleans,-5,0.3980582524271844,1,,True,False,2017
+New Orleans,-4,0.3949044585987261,1,,True,False,2017
+New Orleans,-3,0.294478527607362,1,,True,False,2017
+New Orleans,-2,0.3154761904761904,1,,True,False,2017
+New Orleans,-1,0.2670454545454545,1,,True,True,2017
+New Orleans,0,0.294478527607362,1,,False,False,2017

@@ -1,0 +1,2 @@
+known_contaminated_agencies,clean_agencies,total_agencies,known_contamination_rate,estimated_upper_bound,sensitivity_recommendation
+0,0,0,0,0.1,Run analysis excluding all agencies in 250K+ metro areas as conservative bound

@@ -1,0 +1,8 @@
+{
+  "centroid_lat": 39.1285,
+  "centroid_lon": -84.5421,
+  "spatial_std_lat": 0.0244,
+  "spatial_std_lon": 0.0351,
+  "coverage_area_note": "Centroid at (39.1285, -84.5421) \u00b1 1\u03c3 covers 45% of flights",
+  "concentration_index": 0.452
+}

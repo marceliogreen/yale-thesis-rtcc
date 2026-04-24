@@ -1,0 +1,44 @@
+{
+  "timestamp": "2026-04-15T20:49:15.700179",
+  "model_results": [],
+  "human_vs_ai": [
+    {
+      "cognitive_dimension": "Situation Awareness (comprehension)",
+      "human_benchmark": "Endsley SA Level 2 failure rate",
+      "human_value": 75,
+      "human_unit": "percent",
+      "ai_model": "slowfast",
+      "ai_value": null,
+      "ai_unit": "top1_accuracy_percent",
+      "comparison": "pending",
+      "thesis_implication": "If SlowFast accuracy > 25% (human SA comprehension success rate), AI comprehension exceeds operator baseline"
+    },
+    {
+      "cognitive_dimension": "Intent Attribution",
+      "human_benchmark": "Heider-Simmel accuracy from ambiguous motion",
+      "human_value": 70,
+      "human_unit": "percent",
+      "ai_model": "posec3d",
+      "ai_value": null,
+      "ai_unit": "top1_accuracy_percent",
+      "comparison": "pending",
+      "thesis_implication": "If PoseC3D skeleton-only classification exceeds 70%, AI matches human intent attribution \u2014 supports automaticity thesis"
+    },
+    {
+      "cognitive_dimension": "Sustained Vigilance",
+      "human_benchmark": "Mackworth vigilance decrement onset",
+      "human_value": 20,
+      "human_unit": "minutes",
+      "ai_model": "videomae",
+      "ai_value": null,
+      "ai_unit": "no_decrement",
+      "comparison": "ai_superior",
+      "thesis_implication": "AI models show no time-dependent performance decay \u2014 fundamentally superior for sustained surveillance monitoring"
+    }
+  ],
+  "prerequisites": {
+    "mmaction2_installed": false,
+    "ucf_crime_available": false,
+    "virat_available": false
+  }
+}

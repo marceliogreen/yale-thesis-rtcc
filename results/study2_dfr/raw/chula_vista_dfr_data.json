@@ -1,0 +1,53 @@
+{
+  "city": "Chula Vista",
+  "state": "CA",
+  "source": "Multiple secondary sources (news, vendor announcements, city council reports)",
+  "source_url": "https://www.chulavistaca.gov/departments/police/unmanned-aircraft-system-uas-program",
+  "source_type": "aggregated_secondary",
+  "scraped_at": "2026-04-15T00:00:00",
+  "program_details": {
+    "launch_date": "2020-01-01",
+    "program_status": "active",
+    "vendor": "Skydio",
+    "department": "Chula Vista Police Department",
+    "distinction": "First and most mature DFR program in the United States"
+  },
+  "technology_stack": {
+    "drones": "Skydio X2 (primary), Skydio X10 (newer)",
+    "communication": "LTE-based real-time video streaming",
+    "software": "Skydio Autonomy engine for autonomous flight",
+    "evidence": "Cloud-based evidence management"
+  },
+  "operational_metrics": {
+    "avg_response_time_p1_sec": 234,
+    "avg_response_time_note": "~3.9 minutes for Priority 1 calls",
+    "avg_flight_time_sec": 172,
+    "total_missions": 10000,
+    "total_missions_note": "Exceeded 10,000 missions as of late 2023",
+    "deployment_hours": "Extended operational hours (exact schedule varies)",
+    "coverage": "Expanded from downtown to broader city coverage"
+  },
+  "program_history": {
+    "2019": "Initial pilot program and FAA Part 107 waiver",
+    "2020": "Formal program launch as first US DFR program",
+    "2021": "Expansion of coverage area and operational hours",
+    "2022": "Continued scaling, Power BI public dashboard launched",
+    "2023": "Exceeded 10,000 total missions, fleet modernization to Skydio X10",
+    "2024_2025": "Continued operations, program model replicated by other cities"
+  },
+  "known_metrics": {
+    "launch_date": "2020-01-01",
+    "avg_response_time_sec": 234,
+    "avg_flight_time_sec": 172,
+    "total_missions": 10000,
+    "vendor": "Skydio",
+    "program_status": "active"
+  },
+  "data_quality_notes": "Chula Vista website URL restructured; program page may have moved. Power BI dashboard was publicly accessible but is JS-rendered. Key metrics well-established across multiple secondary sources. FOIA request recommended for granular deployment data. This is the flagship DFR program and most frequently cited in DFR literature.",
+  "cog_sci_relevance": {
+    "response_time": "Endsley SA — faster aerial arrival does not guarantee better situational comprehension",
+    "mission_volume": "Mackworth vigilance — high mission frequency tests sustained attention limits",
+    "autonomous_flight": "Bargh automaticity — operator trust in autonomous systems may produce complacency",
+    "video_streaming": "Head & Helton change blindness — real-time video monitoring susceptible to attention failures"
+  }
+}

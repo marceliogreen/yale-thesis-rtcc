@@ -1,0 +1,4 @@
+city,state,launch_date,program_status,vendor,avg_response_time_sec,avg_flight_time_sec,total_missions,successful_missions,incidents_assisted,deployment_period,fleet_size,coverage_area,drone_models,data_quality
+Chula Vista,CA,2020-01-01,active,Skydio,234.0,172.0,10000.0,,,,,Expanded city-wide from downtown,"Skydio X2, Skydio X10",secondary
+Elizabeth,NJ,2022-06-01,active,Skydio,94.0,,1390.0,431.0,347.0,Jun 2022 - Jan 2023,,City-wide (Mon-Fri 0900-2000),Skydio,policy_doc
+Cincinnati,OH,2023-04-17,active,Axon/Skydio,,,,,,,,Downtown → 90% city by end 2025,Skydio autonomous,sparse

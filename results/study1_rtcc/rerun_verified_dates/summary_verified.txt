@@ -1,0 +1,30 @@
+======================================================================
+ANALYSIS SUMMARY — VERIFIED TREATMENT DATES
+======================================================================
+
+STATUS: Verified results (updated 2026-04-17).
+
+NOTE ON ALBUQUERQUE/FRESNO DATES:
+  The WaPo audit initially identified Albuquerque RTCC as early as 2005
+  and Fresno as early as 2007 (camera infrastructure predating the formal
+  monitoring center). Per DATA_STATUS_REPORT.md resolution:
+    - Albuquerque: Keeping 2013 (Police Magazine: RTCC opened March 2013)
+    - Fresno: Keeping 2015 (ABC30/Fresno Bee: RTCC opened July 2015)
+  Both cities were dropped from the WaPo 6-city ITS (2007-2017) because
+  even with 2013/2015 dates, the pre-period is marginal. Both ARE included
+  in the 15-city extended ITS using FBI CDE data (2006-2024) where they
+  have adequate pre-periods.
+
+CITIES ANALYZABLE WITH VERIFIED DATES (WaPo clearance data):
+  Chicago         RTCC=2016 (was 2017, shift=-1)  β₂=-10.1pp  pre=9yr  post=2yr
+  St. Louis       RTCC=2014 (was 2015, shift=-1)  β₂=-17.5pp  pre=7yr  post=4yr
+  Miami           RTCC=2015 (was 2016, shift=-1)  β₂=+9.1pp   pre=8yr  post=3yr
+  New Orleans     RTCC=2017 (was 2017, shift=+0)  β₂=+5.4pp   pre=9yr  post=1yr
+
+CITIES IN 15-CITY EXTENDED ITS (FBI CDE homicide data):
+  Above 4 + Albuquerque (2013), Fresno (2015), Hartford (2016),
+  Newark (2018), Baltimore (2013), Dallas (2019), Denver (2019),
+  Detroit (2016), Houston (2008), Memphis (2008), Philadelphia (2012)
+
+POOLED LEVEL CHANGE (WaPo verified, 4 cities): -10.0 pp
+(Compare: modeled dates pooled ≈ -9.5 to -12 pp)

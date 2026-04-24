@@ -1,0 +1,65 @@
+{
+  "vigilance_decrement": {
+    "parameter": "Time-on-task performance decline",
+    "onset_minutes": 20,
+    "onset_range": [
+      15,
+      30
+    ],
+    "source": "Mackworth (1948); Warm, Parasuraman & Mathews (2008)",
+    "relevance": "DFR operator shifts exceeding 20 min should show degraded detection",
+    "metric_unit": "minutes"
+  },
+  "change_blindness": {
+    "parameter": "Detection rate for scene changes",
+    "rate_percent": 50,
+    "rate_range": [
+      30,
+      70
+    ],
+    "source": "Head & Helton (2012); Simons & Levin (1997)",
+    "relevance": "RTCC operators monitoring multiple feeds miss ~50% of scene changes",
+    "metric_unit": "percent detected"
+  },
+  "sa_failure_rate": {
+    "parameter": "Situation awareness Level 2/3 failure",
+    "level2_failure_percent": 75,
+    "level3_failure_percent": 90,
+    "source": "Endsley (1995, 2015); Jones & Endsley (1996)",
+    "relevance": "75% of SA failures are comprehension-level; more data \u2260 better SA",
+    "metric_unit": "percent of total SA errors"
+  },
+  "intent_attribution_accuracy": {
+    "parameter": "Intent inference from ambiguous motion",
+    "accuracy_percent": 70,
+    "accuracy_range": [
+      55,
+      85
+    ],
+    "source": "Heider & Simmel (1944); Berry et al. (2011)",
+    "relevance": "Humans attribute intent to geometric shapes \u2014 operators will over-attribute intent to ambiguous behavior",
+    "metric_unit": "percent correct classification"
+  },
+  "automaticity_onset": {
+    "parameter": "Automatic evaluation activation time",
+    "activation_ms": 250,
+    "activation_range": [
+      150,
+      400
+    ],
+    "source": "Bargh, Chen & Burrows (1996); Ferguson & Bargh (2004)",
+    "relevance": "RTCC operators develop automatic threat evaluations within months \u2014 may increase false positives",
+    "metric_unit": "milliseconds"
+  },
+  "legitimacy_cooperation": {
+    "parameter": "Procedural justice \u2192 cooperation effect size",
+    "effect_size_r": 0.4,
+    "effect_range": [
+      0.3,
+      0.55
+    ],
+    "source": "Tyler (1990, 2004); Tyler & Huo (2002)",
+    "relevance": "DFR surveillance perceived as illegitimate reduces cooperation by ~40% correlation",
+    "metric_unit": "Pearson r"
+  }
+}

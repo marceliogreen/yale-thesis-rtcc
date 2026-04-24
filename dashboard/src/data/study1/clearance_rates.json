@@ -1,0 +1,560 @@
+[
+  {
+    "city": "Albuquerque",
+    "year": 2010,
+    "homicides": 45,
+    "cleared": 30,
+    "clearance_rate": 0.6666666666666666,
+    "rtcc_year": 2013,
+    "post_rtcc": 0
+  },
+  {
+    "city": "Albuquerque",
+    "year": 2011,
+    "homicides": 38,
+    "cleared": 28,
+    "clearance_rate": 0.7368421052631579,
+    "rtcc_year": 2013,
+    "post_rtcc": 0
+  },
+  {
+    "city": "Albuquerque",
+    "year": 2012,
+    "homicides": 46,
+    "cleared": 32,
+    "clearance_rate": 0.6956521739130435,
+    "rtcc_year": 2013,
+    "post_rtcc": 0
+  },
+  {
+    "city": "Albuquerque",
+    "year": 2013,
+    "homicides": 33,
+    "cleared": 17,
+    "clearance_rate": 0.5151515151515151,
+    "rtcc_year": 2013,
+    "post_rtcc": 1
+  },
+  {
+    "city": "Albuquerque",
+    "year": 2014,
+    "homicides": 28,
+    "cleared": 20,
+    "clearance_rate": 0.7142857142857143,
+    "rtcc_year": 2013,
+    "post_rtcc": 1
+  },
+  {
+    "city": "Albuquerque",
+    "year": 2015,
+    "homicides": 50,
+    "cleared": 29,
+    "clearance_rate": 0.58,
+    "rtcc_year": 2013,
+    "post_rtcc": 1
+  },
+  {
+    "city": "Albuquerque",
+    "year": 2016,
+    "homicides": 63,
+    "cleared": 38,
+    "clearance_rate": 0.6031746031746031,
+    "rtcc_year": 2013,
+    "post_rtcc": 1
+  },
+  {
+    "city": "Albuquerque",
+    "year": 2017,
+    "homicides": 75,
+    "cleared": 38,
+    "clearance_rate": 0.5066666666666667,
+    "rtcc_year": 2013,
+    "post_rtcc": 1
+  },
+  {
+    "city": "Chicago",
+    "year": 2007,
+    "homicides": 445,
+    "cleared": 169,
+    "clearance_rate": 0.3797752808988764,
+    "rtcc_year": 2017,
+    "post_rtcc": 0
+  },
+  {
+    "city": "Chicago",
+    "year": 2008,
+    "homicides": 510,
+    "cleared": 190,
+    "clearance_rate": 0.37254901960784315,
+    "rtcc_year": 2017,
+    "post_rtcc": 0
+  },
+  {
+    "city": "Chicago",
+    "year": 2009,
+    "homicides": 457,
+    "cleared": 155,
+    "clearance_rate": 0.33916849015317285,
+    "rtcc_year": 2017,
+    "post_rtcc": 0
+  },
+  {
+    "city": "Chicago",
+    "year": 2010,
+    "homicides": 434,
+    "cleared": 135,
+    "clearance_rate": 0.31105990783410137,
+    "rtcc_year": 2017,
+    "post_rtcc": 0
+  },
+  {
+    "city": "Chicago",
+    "year": 2011,
+    "homicides": 437,
+    "cleared": 133,
+    "clearance_rate": 0.30434782608695654,
+    "rtcc_year": 2017,
+    "post_rtcc": 0
+  },
+  {
+    "city": "Chicago",
+    "year": 2012,
+    "homicides": 505,
+    "cleared": 136,
+    "clearance_rate": 0.2693069306930693,
+    "rtcc_year": 2017,
+    "post_rtcc": 0
+  },
+  {
+    "city": "Chicago",
+    "year": 2013,
+    "homicides": 423,
+    "cleared": 133,
+    "clearance_rate": 0.3144208037825059,
+    "rtcc_year": 2017,
+    "post_rtcc": 0
+  },
+  {
+    "city": "Chicago",
+    "year": 2014,
+    "homicides": 418,
+    "cleared": 125,
+    "clearance_rate": 0.29904306220095694,
+    "rtcc_year": 2017,
+    "post_rtcc": 0
+  },
+  {
+    "city": "Chicago",
+    "year": 2015,
+    "homicides": 487,
+    "cleared": 120,
+    "clearance_rate": 0.2464065708418891,
+    "rtcc_year": 2017,
+    "post_rtcc": 0
+  },
+  {
+    "city": "Chicago",
+    "year": 2016,
+    "homicides": 765,
+    "cleared": 110,
+    "clearance_rate": 0.1437908496732026,
+    "rtcc_year": 2017,
+    "post_rtcc": 0
+  },
+  {
+    "city": "Chicago",
+    "year": 2017,
+    "homicides": 654,
+    "cleared": 56,
+    "clearance_rate": 0.0856269113149847,
+    "rtcc_year": 2017,
+    "post_rtcc": 1
+  },
+  {
+    "city": "Fresno",
+    "year": 2007,
+    "homicides": 52,
+    "cleared": 30,
+    "clearance_rate": 0.5769230769230769,
+    "rtcc_year": 2015,
+    "post_rtcc": 0
+  },
+  {
+    "city": "Fresno",
+    "year": 2008,
+    "homicides": 40,
+    "cleared": 26,
+    "clearance_rate": 0.65,
+    "rtcc_year": 2015,
+    "post_rtcc": 0
+  },
+  {
+    "city": "Fresno",
+    "year": 2009,
+    "homicides": 42,
+    "cleared": 22,
+    "clearance_rate": 0.5238095238095238,
+    "rtcc_year": 2015,
+    "post_rtcc": 0
+  },
+  {
+    "city": "Fresno",
+    "year": 2010,
+    "homicides": 45,
+    "cleared": 30,
+    "clearance_rate": 0.6666666666666666,
+    "rtcc_year": 2015,
+    "post_rtcc": 0
+  },
+  {
+    "city": "Fresno",
+    "year": 2011,
+    "homicides": 35,
+    "cleared": 28,
+    "clearance_rate": 0.8,
+    "rtcc_year": 2015,
+    "post_rtcc": 0
+  },
+  {
+    "city": "Fresno",
+    "year": 2012,
+    "homicides": 51,
+    "cleared": 36,
+    "clearance_rate": 0.7058823529411765,
+    "rtcc_year": 2015,
+    "post_rtcc": 0
+  },
+  {
+    "city": "Fresno",
+    "year": 2013,
+    "homicides": 39,
+    "cleared": 34,
+    "clearance_rate": 0.8717948717948718,
+    "rtcc_year": 2015,
+    "post_rtcc": 0
+  },
+  {
+    "city": "Fresno",
+    "year": 2014,
+    "homicides": 49,
+    "cleared": 39,
+    "clearance_rate": 0.7959183673469388,
+    "rtcc_year": 2015,
+    "post_rtcc": 0
+  },
+  {
+    "city": "Fresno",
+    "year": 2015,
+    "homicides": 39,
+    "cleared": 28,
+    "clearance_rate": 0.717948717948718,
+    "rtcc_year": 2015,
+    "post_rtcc": 1
+  },
+  {
+    "city": "Fresno",
+    "year": 2016,
+    "homicides": 39,
+    "cleared": 21,
+    "clearance_rate": 0.5384615384615384,
+    "rtcc_year": 2015,
+    "post_rtcc": 1
+  },
+  {
+    "city": "Fresno",
+    "year": 2017,
+    "homicides": 56,
+    "cleared": 24,
+    "clearance_rate": 0.42857142857142855,
+    "rtcc_year": 2015,
+    "post_rtcc": 1
+  },
+  {
+    "city": "Miami",
+    "year": 2007,
+    "homicides": 79,
+    "cleared": 41,
+    "clearance_rate": 0.5189873417721519,
+    "rtcc_year": 2016,
+    "post_rtcc": 0
+  },
+  {
+    "city": "Miami",
+    "year": 2008,
+    "homicides": 64,
+    "cleared": 33,
+    "clearance_rate": 0.515625,
+    "rtcc_year": 2016,
+    "post_rtcc": 0
+  },
+  {
+    "city": "Miami",
+    "year": 2009,
+    "homicides": 60,
+    "cleared": 21,
+    "clearance_rate": 0.35,
+    "rtcc_year": 2016,
+    "post_rtcc": 0
+  },
+  {
+    "city": "Miami",
+    "year": 2010,
+    "homicides": 69,
+    "cleared": 35,
+    "clearance_rate": 0.5072463768115942,
+    "rtcc_year": 2016,
+    "post_rtcc": 0
+  },
+  {
+    "city": "Miami",
+    "year": 2011,
+    "homicides": 71,
+    "cleared": 29,
+    "clearance_rate": 0.4084507042253521,
+    "rtcc_year": 2016,
+    "post_rtcc": 0
+  },
+  {
+    "city": "Miami",
+    "year": 2012,
+    "homicides": 54,
+    "cleared": 22,
+    "clearance_rate": 0.4074074074074074,
+    "rtcc_year": 2016,
+    "post_rtcc": 0
+  },
+  {
+    "city": "Miami",
+    "year": 2013,
+    "homicides": 69,
+    "cleared": 26,
+    "clearance_rate": 0.37681159420289856,
+    "rtcc_year": 2016,
+    "post_rtcc": 0
+  },
+  {
+    "city": "Miami",
+    "year": 2014,
+    "homicides": 82,
+    "cleared": 27,
+    "clearance_rate": 0.32926829268292684,
+    "rtcc_year": 2016,
+    "post_rtcc": 0
+  },
+  {
+    "city": "Miami",
+    "year": 2015,
+    "homicides": 77,
+    "cleared": 34,
+    "clearance_rate": 0.44155844155844154,
+    "rtcc_year": 2016,
+    "post_rtcc": 0
+  },
+  {
+    "city": "Miami",
+    "year": 2016,
+    "homicides": 59,
+    "cleared": 14,
+    "clearance_rate": 0.23728813559322035,
+    "rtcc_year": 2016,
+    "post_rtcc": 1
+  },
+  {
+    "city": "Miami",
+    "year": 2017,
+    "homicides": 60,
+    "cleared": 12,
+    "clearance_rate": 0.2,
+    "rtcc_year": 2016,
+    "post_rtcc": 1
+  },
+  {
+    "city": "New Orleans",
+    "year": 2008,
+    "homicides": 2,
+    "cleared": 1,
+    "clearance_rate": 0.5,
+    "rtcc_year": 2017,
+    "post_rtcc": 0
+  },
+  {
+    "city": "New Orleans",
+    "year": 2009,
+    "homicides": 2,
+    "cleared": 1,
+    "clearance_rate": 0.5,
+    "rtcc_year": 2017,
+    "post_rtcc": 0
+  },
+  {
+    "city": "New Orleans",
+    "year": 2010,
+    "homicides": 186,
+    "cleared": 83,
+    "clearance_rate": 0.44623655913978494,
+    "rtcc_year": 2017,
+    "post_rtcc": 0
+  },
+  {
+    "city": "New Orleans",
+    "year": 2011,
+    "homicides": 211,
+    "cleared": 79,
+    "clearance_rate": 0.3744075829383886,
+    "rtcc_year": 2017,
+    "post_rtcc": 0
+  },
+  {
+    "city": "New Orleans",
+    "year": 2012,
+    "homicides": 206,
+    "cleared": 82,
+    "clearance_rate": 0.39805825242718446,
+    "rtcc_year": 2017,
+    "post_rtcc": 0
+  },
+  {
+    "city": "New Orleans",
+    "year": 2013,
+    "homicides": 157,
+    "cleared": 62,
+    "clearance_rate": 0.39490445859872614,
+    "rtcc_year": 2017,
+    "post_rtcc": 0
+  },
+  {
+    "city": "New Orleans",
+    "year": 2014,
+    "homicides": 163,
+    "cleared": 48,
+    "clearance_rate": 0.294478527607362,
+    "rtcc_year": 2017,
+    "post_rtcc": 0
+  },
+  {
+    "city": "New Orleans",
+    "year": 2015,
+    "homicides": 168,
+    "cleared": 53,
+    "clearance_rate": 0.31547619047619047,
+    "rtcc_year": 2017,
+    "post_rtcc": 0
+  },
+  {
+    "city": "New Orleans",
+    "year": 2016,
+    "homicides": 176,
+    "cleared": 47,
+    "clearance_rate": 0.26704545454545453,
+    "rtcc_year": 2017,
+    "post_rtcc": 0
+  },
+  {
+    "city": "New Orleans",
+    "year": 2017,
+    "homicides": 163,
+    "cleared": 48,
+    "clearance_rate": 0.294478527607362,
+    "rtcc_year": 2017,
+    "post_rtcc": 1
+  },
+  {
+    "city": "St. Louis",
+    "year": 2007,
+    "homicides": 140,
+    "cleared": 67,
+    "clearance_rate": 0.4785714285714286,
+    "rtcc_year": 2015,
+    "post_rtcc": 0
+  },
+  {
+    "city": "St. Louis",
+    "year": 2008,
+    "homicides": 167,
+    "cleared": 87,
+    "clearance_rate": 0.5209580838323353,
+    "rtcc_year": 2015,
+    "post_rtcc": 0
+  },
+  {
+    "city": "St. Louis",
+    "year": 2009,
+    "homicides": 146,
+    "cleared": 83,
+    "clearance_rate": 0.5684931506849316,
+    "rtcc_year": 2015,
+    "post_rtcc": 0
+  },
+  {
+    "city": "St. Louis",
+    "year": 2010,
+    "homicides": 142,
+    "cleared": 81,
+    "clearance_rate": 0.5704225352112676,
+    "rtcc_year": 2015,
+    "post_rtcc": 0
+  },
+  {
+    "city": "St. Louis",
+    "year": 2011,
+    "homicides": 113,
+    "cleared": 68,
+    "clearance_rate": 0.6017699115044248,
+    "rtcc_year": 2015,
+    "post_rtcc": 0
+  },
+  {
+    "city": "St. Louis",
+    "year": 2012,
+    "homicides": 112,
+    "cleared": 62,
+    "clearance_rate": 0.5535714285714286,
+    "rtcc_year": 2015,
+    "post_rtcc": 0
+  },
+  {
+    "city": "St. Louis",
+    "year": 2013,
+    "homicides": 121,
+    "cleared": 62,
+    "clearance_rate": 0.512396694214876,
+    "rtcc_year": 2015,
+    "post_rtcc": 0
+  },
+  {
+    "city": "St. Louis",
+    "year": 2014,
+    "homicides": 160,
+    "cleared": 65,
+    "clearance_rate": 0.40625,
+    "rtcc_year": 2015,
+    "post_rtcc": 0
+  },
+  {
+    "city": "St. Louis",
+    "year": 2015,
+    "homicides": 186,
+    "cleared": 65,
+    "clearance_rate": 0.34946236559139787,
+    "rtcc_year": 2015,
+    "post_rtcc": 1
+  },
+  {
+    "city": "St. Louis",
+    "year": 2016,
+    "homicides": 188,
+    "cleared": 68,
+    "clearance_rate": 0.3617021276595745,
+    "rtcc_year": 2015,
+    "post_rtcc": 1
+  },
+  {
+    "city": "St. Louis",
+    "year": 2017,
+    "homicides": 202,
+    "cleared": 64,
+    "clearance_rate": 0.31683168316831684,
+    "rtcc_year": 2015,
+    "post_rtcc": 1
+  }
+]

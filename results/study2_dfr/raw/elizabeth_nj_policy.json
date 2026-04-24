@@ -1,0 +1,107 @@
+{
+  "city": "Elizabeth",
+  "state": "NJ",
+  "source": "PowerDMS - Elizabeth NJ Police Department General Orders",
+  "source_url": "https://public.powerdms.com/ELIZABETH/documents/1989398",
+  "source_type": "policy_doc",
+  "scraped_at": "2026-04-15T00:00:00",
+  "document": {
+    "title": "Unmanned Aircraft System (UAS) General Order",
+    "volume": 3,
+    "chapter": 18,
+    "effective_date": "2024-07-10",
+    "issued_by": "Chief Giacomo Sacca",
+    "total_pages": 11,
+    "sections": [
+      "1.0 Purpose",
+      "2.0 Policy",
+      "3.0 Definitions",
+      "4.0 Organization",
+      "5.0 General UAS Team Rules",
+      "6.0 UAS Operational Procedures",
+      "7.0 Types of Missions",
+      "8.0 Flight Procedures",
+      "9.0 First Responder Deployment",
+      "10.0 Evidence and Documentation",
+      "11.0 Training Requirements",
+      "12.0 Log Book & Currency",
+      "13.0 Accidents and Mishaps",
+      "14.0 Audits and Reviews",
+      "15.0 Privacy"
+    ]
+  },
+  "program_structure": {
+    "DFR_team": {
+      "description": "Drone as First Responder Team",
+      "personnel": {
+        "C_Platoon": {
+          "pilots": 2,
+          "shift_hours": "0900-2000",
+          "days": "Monday-Friday"
+        },
+        "D_Platoon": {
+          "pilots": 2,
+          "shift_hours": "0900-2000",
+          "days": "Monday-Friday"
+        }
+      },
+      "total_dedicated_pilots": 4
+    },
+    "Patrol_UAS_Team": {
+      "description": "Patrol officers trained as UAS operators for supplemental coverage",
+      "role": "Fill gaps outside DFR team hours"
+    },
+    "NSU": {
+      "description": "Narcotics/Street Unit UAS operations"
+    },
+    "ESU": {
+      "description": "Emergency Services Unit - tactical UAS deployments"
+    }
+  },
+  "mission_types": [
+    {"type": "DFR - Priority 1 calls", "description": "First responder to emergency calls"},
+    {"type": "DFR - Priority 2 calls", "description": "First responder to urgent calls"},
+    {"type": "Search and rescue", "description": "Missing persons, fugitive searches"},
+    {"type": "Crime scene documentation", "description": "Aerial photography/mapping"},
+    {"type": "Traffic investigation", "description": "Accident reconstruction"},
+    {"type": "Crowd/traffic monitoring", "description": "Large events, traffic management"},
+    {"type": "Hazmat response", "description": "Chemical spill assessment"},
+    {"type": "Tactical operations", "description": "SWAT/barricade support"},
+    {"type": "Training", "description": "Currency and proficiency flights"},
+    {"type": "Other - approved by supervisor", "description": "Case-by-case authorization"}
+  ],
+  "training_requirements": {
+    "initial_training": {
+      "flight_hours": 5,
+      "lecture_hours": 5,
+      "supervised_flights": 15,
+      "certification": "FAA Part 107 Remote Pilot Certificate required"
+    },
+    "currency": {
+      "recurrency_period_days": 90,
+      "requirement": "Must complete minimum flight hours every 90 days",
+      "failure_consequence": "Removed from flight status until recertified"
+    },
+    "ongoing_training": "Quarterly proficiency evaluations"
+  },
+  "privacy_safeguards": {
+    "warrant_required": {
+      "description": "Flights over areas with reasonable expectation of privacy require warrant or exigent circumstances",
+      "exceptions": ["Exigent circumstances", "Consent", "Plain view from public airspace"]
+    },
+    "data_retention": {
+      "description": "Video retained per evidence policy",
+      "non_evidentiary": "Deleted after standard retention period"
+    },
+    "minimization": "Operators must use minimum intrusion necessary"
+  },
+  "known_metrics": {
+    "launch_date": "2022-06-01",
+    "avg_response_time_sec": 94,
+    "total_deployments": 1390,
+    "successful_missions": 431,
+    "incidents_assisted": 347,
+    "deployment_period": "Jun 2022 - Jan 2023",
+    "vendor": "Skydio"
+  }
+}

@@ -1,0 +1,53 @@
+[
+  {
+    "city": "Chula Vista",
+    "state": "CA",
+    "launch_date": "2020-01-01",
+    "program_status": "active",
+    "vendor": "Skydio",
+    "avg_response_time_sec": 234,
+    "avg_flight_time_sec": 172,
+    "total_missions": 10000,
+    "successful_missions": null,
+    "incidents_assisted": null,
+    "deployment_period": null,
+    "fleet_size": null,
+    "coverage_area": "Expanded city-wide from downtown",
+    "drone_models": "Skydio X2",
+    "data_quality": "Skydio X10"
+  },
+  {
+    "city": "Elizabeth",
+    "state": "NJ",
+    "launch_date": "2022-06-01",
+    "program_status": "active",
+    "vendor": "Skydio",
+    "avg_response_time_sec": 94,
+    "avg_flight_time_sec": null,
+    "total_missions": 1390,
+    "successful_missions": 431,
+    "incidents_assisted": 347,
+    "deployment_period": "Jun 2022 - Jan 2023",
+    "fleet_size": null,
+    "coverage_area": "City-wide (Mon-Fri 0900-2000)",
+    "drone_models": "Skydio",
+    "data_quality": "policy_doc"
+  },
+  {
+    "city": "Cincinnati",
+    "state": "OH",
+    "launch_date": "2023-04-17",
+    "program_status": "active",
+    "vendor": "Axon/Skydio",
+    "avg_response_time_sec": null,
+    "avg_flight_time_sec": null,
+    "total_missions": null,
+    "successful_missions": null,
+    "incidents_assisted": null,
+    "deployment_period": null,
+    "fleet_size": null,
+    "coverage_area": "Downtown → 90% city by end 2025",
+    "drone_models": "Skydio autonomous",
+    "data_quality": "sparse"
+  }
+]
