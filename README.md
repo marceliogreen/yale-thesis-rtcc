@@ -8,7 +8,7 @@ Evaluating the efficiency of Real-Time Crime Centers and emerging technology acr
 
 **[dashboard-alpha-pearl-55.vercel.app](https://dashboard-alpha-pearl-55.vercel.app)**
 
-image.png
+
 
 All results, charts, methodology, and code traceability available interactively. No setup required.
 
