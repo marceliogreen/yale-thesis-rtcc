@@ -29,6 +29,7 @@ import pytest
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+from pipeline.config import RTCC_CONFIG, get_rtcc_oris
 from pipeline.data.fbi_api_client import UnifiedCrimeDataClient, RTCC_ORIS
 from pipeline.data.comparison_pool import ComparisonPoolBuilder
 from pipeline.models.clearance_classifier import RTCCClearanceClassifier
@@ -49,7 +50,7 @@ def rtcc_cities_dict():
 def sample_fbi_response():
     """Mock FBI CDE API response for homicide data."""
     return {
-        "agency": {"ori": "CT0030100", "name": "Hartford Police Department"},
+        "agency": {"ori": "CT0006400", "name": "Hartford Police Department"},
         "offenses": {
             "offense": [
                 {
@@ -70,7 +71,7 @@ def sample_clearance_data():
     """Mock clearance rate data for testing."""
     return pd.DataFrame({
         'city': ['Hartford'] * 14,
-        'ori': ['CT0030100'] * 14,
+        'ori': ['CT0006400'] * 14,
         'year': list(range(2010, 2024)),
         'homicide_count': [22, 18, 25, 20, 23, 19, 21, 24, 20, 18, 22, 19, 21, 20],
         'clearance_count': [12, 9, 11, 10, 13, 8, 12, 14, 11, 9, 13, 10, 11, 10],
@@ -107,7 +108,7 @@ def mock_scraped_html():
 def mid_sized_cities_df():
     """Mock mid-sized cities dataframe."""
     return pd.DataFrame({
-        'ORI': ['CT0030100', 'FL0130200', 'NY0501200', 'CA0190200', 'TX0123400'],
+        'ORI': ['CT0006400', 'FL0130200', 'NY0501200', 'CA0190200', 'TX0123400'],
         'AGENCY': ['Hartford PD', 'Miami PD', 'Buffalo PD', 'Fresno PD', 'Austin PD'],
         'STNAME': ['CT', 'FL', 'NY', 'CA', 'TX'],
         'POP': [125000, 450000, 260000, 540000, 950000],
@@ -124,22 +125,22 @@ def test_fbi_api_client_cache(tmp_path, sample_fbi_response):
     client = UnifiedCrimeDataClient(cache_dir=cache_dir)
 
     # Test cache path generation
-    cache_path = client._get_cache_path("fbi_cde", "CT0030100", 2010, 2023)
+    cache_path = client._get_cache_path("fbi_cde", "CT0006400", 2010, 2023)
     assert "fbi_cde" in str(cache_path)
-    assert "ct0030100" in str(cache_path).lower()
+    assert "ct0006400" in str(cache_path).lower()
 
 
 def test_fbi_api_client_rtcc_oris_completeness():
     """Verify all 8 RTCC cities are configured."""
-    assert len(UnifiedCrimeDataClient.RTCC_ORIS) == 8
-    expected_cities = {"Hartford", "Miami", "St. Louis", "Newark", "New Orleans", "Albuquerque", "Fresno", "Chicago"}
-    assert set(UnifiedCrimeDataClient.RTCC_ORIS.keys()) == expected_cities
+    assert len(get_rtcc_oris(RTCC_CONFIG.study1_cities)) == 8
+    expected_cities = set(RTCC_CONFIG.study1_cities)
+    assert set(UnifiedCrimeDataClient.RTCC_ORIS.keys()) >= expected_cities
 
 
 def test_fbi_api_client_ori_format():
     """Verify ORI codes are in correct format."""
-    for city, config in UnifiedCrimeDataClient.RTCC_ORIS.items():
-        ori = config["ori"]
+    for city, config in get_rtcc_oris(RTCC_CONFIG.study1_cities).items():
+        ori = config
         assert len(ori) == 9, f"{city} ORI has wrong length: {ori}"
         assert ori[2] == "0", f"{city} ORI format incorrect: {ori}"
 
@@ -253,7 +254,7 @@ def test_comparison_pool_exclude_rtcc(mid_sized_cities_df, tmp_path):
 
     # Add RTCC cities to dataframe
     mid_sized_cities_df.loc[len(mid_sized_cities_df)] = {
-        'ORI': 'CT0030100',
+        'ORI': 'CT0006400',
         'AGENCY': 'Hartford PD',
         'STNAME': 'CT',
         'POP': 125000,
@@ -264,7 +265,7 @@ def test_comparison_pool_exclude_rtcc(mid_sized_cities_df, tmp_path):
     result = builder.exclude_rtcc_cities(filtered)
 
     # Hartford should be excluded
-    assert "CT0030100" not in result["ORI"].values
+    assert "CT0006400" not in result["ORI"].values
 
 
 def test_comparison_pool_region_mapping(mid_sized_cities_df, tmp_path):
@@ -311,8 +312,8 @@ def test_classifier_model_configs():
     from pipeline.models.clearance_classifier import RTCCClearanceClassifier
 
     xgb_config = RTCCClearanceClassifier.MODEL_CONFIGS["xgboost"]
-    assert xgb_config["n_estimators"] == 500
-    assert xgb_config["max_depth"] == 6
+    assert xgb_config["n_estimators"] == 100
+    assert xgb_config["max_depth"] == 5
 
     rf_config = RTCCClearanceClassifier.MODEL_CONFIGS["random_forest"]
     assert rf_config["class_weight"] == "balanced"

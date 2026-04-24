@@ -9,6 +9,7 @@ Uses:
 Author: Marcel Green <marcelo.green@yale.edu>
 """
 
+import sys
 import pandas as pd
 import numpy as np
 from pathlib import Path
@@ -16,17 +17,14 @@ from typing import Dict, List, Tuple
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# RTCC City Configuration (from thesis/Thesis Files/yale-thesis-rtcc/data/rtcc_cities.json)
-RTCC_CITIES = {
-    "Chicago": {"ori": "IL0160000", "rtcc_year": 2017, "population": 2694000},
-    "St. Louis": {"ori": "MO0640000", "rtcc_year": 2015, "population": 293000},
-    "Miami": {"ori": "FL0130200", "rtcc_year": 2016, "population": 467000},
-    "New Orleans": {"ori": "LA0360000", "rtcc_year": 2017, "population": 376000},
-    "Albuquerque": {"ori": "NM0010100", "rtcc_year": 2020, "population": 564000},
-    "Fresno": {"ori": "CA0190200", "rtcc_year": 2018, "population": 545000},
-    "Hartford": {"ori": "CT0006400", "rtcc_year": 2016, "population": 121000},  # Verified in Kaplan
-    "Newark": {"ori": "NJ0071400", "rtcc_year": 2018, "population": 277000},
-}
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+project_root_str = str(PROJECT_ROOT)
+if project_root_str not in sys.path:
+    sys.path.insert(0, project_root_str)
+
+from pipeline.config import get_rtcc_city_metadata, RTCC_CONFIG
+
+RTCC_CITIES = get_rtcc_city_metadata(RTCC_CONFIG.study1_cities)
 
 
 def load_washington_post_data(filepath: str) -> pd.DataFrame:

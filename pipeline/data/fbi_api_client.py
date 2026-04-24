@@ -14,14 +14,22 @@ import asyncio
 import json
 import logging
 import os
+import sys
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional, Dict, List
 
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+project_root_str = str(PROJECT_ROOT)
+if project_root_str not in sys.path:
+    sys.path.insert(0, project_root_str)
+
 import httpx
 import pandas as pd
 from dotenv import load_dotenv
+
+from pipeline.config import get_rtcc_years, get_rtcc_oris
 
 # Load environment variables
 load_dotenv()
@@ -38,7 +46,7 @@ class RTCCCity:
 
 
 @dataclass
-class APIError:
+class APIError(Exception):
     """Structured error information."""
     endpoint: str
     status_code: Optional[int]
@@ -59,16 +67,9 @@ class UnifiedCrimeDataClient:
     All data is cached locally to minimize API calls.
     """
 
-    # RTCC Cities Configuration
     RTCC_ORIS = {
-        "Hartford": {"ori": "CT0030100", "rtcc_year": 2016},
-        "Miami": {"ori": "FL0130200", "rtcc_year": 2016},
-        "St. Louis": {"ori": "MO0640000", "rtcc_year": 2015},
-        "Newark": {"ori": "NJ0071400", "rtcc_year": 2018},
-        "New Orleans": {"ori": "LA0360000", "rtcc_year": 2017},
-        "Albuquerque": {"ori": "NM0010100", "rtcc_year": 2020},
-        "Fresno": {"ori": "CA0190200", "rtcc_year": 2018},
-        "Chicago": {"ori": "IL0160000", "rtcc_year": 2017},
+        city: {"ori": ori, "rtcc_year": get_rtcc_years()[city]}
+        for city, ori in get_rtcc_oris().items()
     }
 
     # API Endpoints
@@ -763,6 +764,9 @@ def main():
 
     else:
         parser.print_help()
+
+
+RTCC_ORIS = UnifiedCrimeDataClient.RTCC_ORIS
 
 
 if __name__ == "__main__":

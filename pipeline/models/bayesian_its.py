@@ -23,7 +23,15 @@ import pandas as pd
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 import logging
+import sys
 import warnings
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+project_root_str = str(PROJECT_ROOT)
+if project_root_str not in sys.path:
+    sys.path.insert(0, project_root_str)
+
+from pipeline.config import DATA_CONFIG, RTCC_CONFIG, get_rtcc_years
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -32,22 +40,12 @@ logger = logging.getLogger(__name__)
 warnings.filterwarnings("ignore", category=FutureWarning)
 warnings.filterwarnings("ignore", category=UserWarning)
 
-# RTCC city config
-RTCC_CITIES = {
-    "Chicago": {"rtcc_year": 2017},
-    "St. Louis": {"rtcc_year": 2015},
-    "Miami": {"rtcc_year": 2016},
-    "New Orleans": {"rtcc_year": 2017},
-    "Albuquerque": {"rtcc_year": 2020},
-    "Fresno": {"rtcc_year": 2018},
-    "Hartford": {"rtcc_year": 2016},
-    "Newark": {"rtcc_year": 2018},
-}
+RTCC_CITIES = {city: {"rtcc_year": year} for city, year in get_rtcc_years(RTCC_CONFIG.study1_cities).items()}
 
 
 def prepare_its_data(
     clearance_csv: str = "results/study1_rtcc/annual_clearance_rates.csv",
-    panel_csv: Optional[str] = "thesis/data/master_analysis_panel.csv",
+    panel_csv: Optional[str] = str(DATA_CONFIG.master_panel_csv),
 ) -> pd.DataFrame:
     """
     Prepare analysis-ready dataset for ITS.
@@ -69,19 +67,11 @@ def prepare_its_data(
     if panel_csv and Path(panel_csv).exists():
         df_panel = pd.read_csv(panel_csv)
         # Get RTCC cities from panel
-        rtcc_mask = df_panel["rtcc_city"] == True
-        df_rtcc = df_panel[rtcc_mask & (df_panel["homicides"] > 0)].copy()
+        df_rtcc = df_panel[df_panel["rtcc_city"].notna() & (df_panel["homicides"] > 0)].copy()
 
         if not df_rtcc.empty:
             # Use agency_name as city proxy — map known ORIs
-            ori_to_city = {
-                "CT0006400": "Hartford",
-                "MO0640000": "St. Louis",
-                "FL0130200": "Miami",
-                "LA0360000": "New Orleans",
-                "NM0010100": "Albuquerque",
-            }
-            df_rtcc["city"] = df_rtcc["ori9"].map(ori_to_city)
+            df_rtcc["city"] = df_rtcc["rtcc_city"]
             df_rtcc = df_rtcc.dropna(subset=["city"])
             df_rtcc["source"] = "kaplan_ucr"
             df_rtcc = df_rtcc[df_rtcc["year"] >= 2000]

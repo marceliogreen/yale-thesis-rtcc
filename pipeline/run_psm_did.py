@@ -15,6 +15,7 @@ Output: pipeline/results/study1_rtcc/tables/psm_did_results.csv
 Author: Marcel Green <marcelo.green@yale.edu>
 """
 
+import sys
 import logging
 from pathlib import Path
 
@@ -24,11 +25,18 @@ import statsmodels.formula.api as smf
 from sklearn.neighbors import NearestNeighbors
 from sklearn.preprocessing import StandardScaler
 
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+project_root_str = str(PROJECT_ROOT)
+if project_root_str not in sys.path:
+    sys.path.insert(0, project_root_str)
+
+from pipeline.config import DATA_CONFIG
+
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
 BASE_DIR = Path(__file__).parent.parent
-INPUT_PANEL = BASE_DIR / "thesis" / "data" / "master_analysis_panel_v2.csv"
+INPUT_PANEL = DATA_CONFIG.master_panel_v2_csv
 OUTPUT_DIR = BASE_DIR / "pipeline" / "results" / "study1_rtcc" / "tables"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 

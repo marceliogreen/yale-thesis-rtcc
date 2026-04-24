@@ -14,6 +14,8 @@ Author: Marcelo Green <marcelo.green@yale.edu>
 """
 
 import logging
+import os
+import sys
 from pathlib import Path
 from typing import Dict, List, Optional, Set
 
@@ -21,6 +23,13 @@ import numpy as np
 import pandas as pd
 from dotenv import load_dotenv
 from sklearn.linear_model import LinearRegression
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+project_root_str = str(PROJECT_ROOT)
+if project_root_str not in sys.path:
+    sys.path.insert(0, project_root_str)
+
+from pipeline.config import get_rtcc_oris
 
 load_dotenv()
 
@@ -49,16 +58,7 @@ STATE_TO_REGION = {
 
 
 # RTCC cities to exclude
-RTCC_CITIES = {
-    "Hartford": {"ori": "CT0030100"},
-    "Miami": {"ori": "FL0130200"},
-    "St. Louis": {"ori": "MO0640000"},
-    "Newark": {"ori": "NJ0071400"},
-    "New Orleans": {"ori": "LA0360000"},
-    "Albuquerque": {"ori": "NM0010100"},
-    "Fresno": {"ori": "CA0190200"},
-    "Chicago": {"ori": "IL0160000"},
-}
+RTCC_CITIES = {city: {"ori": ori} for city, ori in get_rtcc_oris().items()}
 
 
 class ComparisonPoolBuilder:
@@ -92,7 +92,7 @@ class ComparisonPoolBuilder:
         self.ucr_path = ucr_path
 
         if mid_sized_path is None:
-            mid_sized_path = Path(__file__).parent.parent.parent / "thesis" / "Thesis Files" / "mid_sized_cities.csv"
+            mid_sized_path = Path(__file__).parent.parent.parent / "data" / "mid_sized_cities.csv"
         self.mid_sized_path = Path(mid_sized_path)
 
         if output_dir is None:

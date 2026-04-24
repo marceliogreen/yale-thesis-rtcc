@@ -15,14 +15,16 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+project_root_str = str(PROJECT_ROOT)
+if project_root_str not in sys.path:
+    sys.path.insert(0, project_root_str)
+
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
-# Add pipeline to path
-PIPELINE_DIR = Path(__file__).parent
-sys.path.insert(0, str(PIPELINE_DIR))
-
-from models.clearance_classifier import RTCCClearanceClassifier
+from pipeline.config import DATA_CONFIG, RTCC_CONFIG, get_rtcc_years
+from pipeline.models.clearance_classifier import RTCCClearanceClassifier
 
 # State-to-region mapping
 STATE_TO_REGION = {
@@ -41,17 +43,7 @@ STATE_TO_REGION = {
     "WA": "West", "WY": "West", "AK": "West",
 }
 
-# RTCC cities with implementation years
-RTCC_CITY_YEARS = {
-    "Hartford": 2016,
-    "Miami": 2016,
-    "St. Louis": 2015,
-    "Newark": 2018,
-    "New Orleans": 2017,
-    "Albuquerque": 2020,
-    "Fresno": 2018,
-    "Chicago": 2017,
-}
+RTCC_CITY_YEARS = get_rtcc_years(RTCC_CONFIG.study1_cities)
 
 
 def load_and_prepare_data(panel_path: str) -> pd.DataFrame:
@@ -96,9 +88,11 @@ def run(output_dir: str = "results/study1_rtcc"):
     """Run the full classifier pipeline."""
     # Search for the panel data in multiple locations
     candidates = [
-        Path(__file__).parent.parent.parent / "thesis" / "data" / "master_analysis_panel.csv",
-        Path(__file__).parent.parent / "data" / "master_analysis_panel.csv",
-        Path("thesis/data/master_analysis_panel.csv"),
+        DATA_CONFIG.master_panel_v2_csv,
+        DATA_CONFIG.master_panel_csv,
+        DATA_CONFIG.analysis_ready_panel_csv,
+        Path("data/master_analysis_panel_v2.csv"),
+        Path("data/master_analysis_panel.csv"),
     ]
     panel_path = None
     for c in candidates:

@@ -14,22 +14,21 @@ import pandas as pd
 from pathlib import Path
 from typing import Dict, List, Optional
 import logging
+import sys
 import warnings
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+project_root_str = str(PROJECT_ROOT)
+if project_root_str not in sys.path:
+    sys.path.insert(0, project_root_str)
+
+from pipeline.config import RTCC_CONFIG, get_rtcc_years
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 warnings.filterwarnings("ignore")
 
-RTCC_CITIES = {
-    "Chicago": {"rtcc_year": 2017},
-    "St. Louis": {"rtcc_year": 2015},
-    "Miami": {"rtcc_year": 2016},
-    "New Orleans": {"rtcc_year": 2017},
-    "Albuquerque": {"rtcc_year": 2020},
-    "Fresno": {"rtcc_year": 2018},
-    "Hartford": {"rtcc_year": 2016},
-    "Newark": {"rtcc_year": 2018},
-}
+RTCC_CITIES = {city: {"rtcc_year": year} for city, year in get_rtcc_years(RTCC_CONFIG.study1_cities).items()}
 
 
 def prepare_prophet_data(

@@ -16,6 +16,7 @@ Author: Marcel Green <marcelo.green@yale.edu>
 """
 
 import logging
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -24,130 +25,35 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import NearestNeighbors
 
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+project_root_str = str(PROJECT_ROOT)
+if project_root_str not in sys.path:
+    sys.path.insert(0, project_root_str)
+
+from pipeline.config import DATA_CONFIG, get_rtcc_city_metadata
+
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
 # ── Paths ──────────────────────────────────────────────────────
 
 BASE_DIR = Path(__file__).parent.parent.parent
-INPUT_PANEL = BASE_DIR / "thesis" / "data" / "master_analysis_panel_with_lemas.csv"
-OUTPUT_PANEL = BASE_DIR / "thesis" / "data" / "master_analysis_panel_v2.csv"
+INPUT_PANEL = DATA_CONFIG.master_panel_with_lemas_csv
+OUTPUT_PANEL = DATA_CONFIG.master_panel_v2_csv
 
 # ── Corrected City Mapping ─────────────────────────────────────
 # Original panel had some wrong ORI-to-city assignments.
 # This maps: city_name → {correct ORI, RTCC year, tier, notes}
 
 CITY_CONFIG = {
-    # ── PRIMARY (deep per-city ITS + Prophet + DiD) ──
-    "Fresno": {
-        "ori9": "CA0100000",          # Corrected from CA0190200 (arcadia)
-        "rtcc_year": 2015,            # RTCC opened July 2015 (ABC30, Fresno Bee, Atlas of Surveillance)
-        "tier": "primary",
-        "state": "CA",
-        "notes": "UCR clearance data: 14/15 years (2010-2024). Good coverage.",
-    },
-    "Albuquerque": {
-        "ori9": "NM0010100",
-        "rtcc_year": 2013,            # RTCC opened March 2013 (Police Magazine, StateTech Magazine)
-        "tier": "primary",
-        "state": "NM",
-        "notes": "UCR clearance data: 15/15 years. Best coverage.",
-    },
-    # ── REFERENCE (GVPA study) ──
-    "Hartford": {
-        "ori9": "CT0006400",
-        "rtcc_year": 2016,
-        "tier": "reference",
-        "state": "CT",
-        "notes": "UCR clearance data: 15/15 years. Kept for GVPA RTCC study reference.",
-    },
-    # ── PARTIAL DATA (used in ITS via WaPo, limited DiD) ──
-    "Miami": {
-        "ori9": "FL0130200",          # County-level ORI covering Miami area
-        "rtcc_year": 2015,            # Verified shift from 2016 (WaPo audit)
-        "tier": "partial",
-        "state": "FL",
-        "notes": "UCR clearance: 7/15 years. Agency name shows 'coral gables' but covers Miami-Dade. ITS via WaPo.",
-    },
-    "St. Louis": {
-        "ori9": "MO0640000",          # County-level, sparse UCR
-        "rtcc_year": 2014,            # Verified shift from 2015 (WaPo audit)
-        "tier": "partial",
-        "state": "MO",
-        "notes": "UCR clearance: 2/15 years. MOSPD0000 has 5 rows. ITS via WaPo.",
-    },
-    "Chicago": {
-        "ori9": "IL0160000",          # Cook county ORI
-        "rtcc_year": 2016,            # Verified shift from 2017 (WaPo audit, SDSC launch)
-        "tier": "partial",
-        "state": "IL",
-        "notes": "UCR clearance: 5/9 post-2010 years. SDSC program. ITS via WaPo.",
-    },
-    # ── DROPPED (insufficient data) ──
-    "New Orleans": {
-        "ori9": "LA0360000",
-        "rtcc_year": 2017,
-        "tier": "dropped",
-        "state": "LA",
-        "notes": "UCR clearance: 0/15 years. Dropped from panel analysis.",
-    },
-    "Newark": {
-        "ori9": "NJ0071400",
-        "rtcc_year": 2018,
-        "tier": "dropped",
-        "state": "NJ",
-        "notes": "Zero WaPo homicides. Dropped from panel analysis.",
-    },
-    # ── Expanded: 7 new cities (8 → 15) ──
-    "Memphis": {
-        "ori9": "TNMPD0000",
-        "rtcc_year": 2008,  # ✓ Memphis Flyer 4/16/2008, OJP/StateTech
-        "tier": "primary",
-        "state": "TN",
-        "notes": "3,562 SHR homicides (2007-2025). Very early RTCC adopter — only ~1yr pre-period in SHR.",
-    },
-    "Baltimore": {
-        "ori9": "MDBPD0000",
-        "rtcc_year": 2013,  # ⚠ Watch Center ~2013-2014, formal RTCC 2024
-        "tier": "primary",
-        "state": "MD",
-        "notes": "4,755 SHR homicides (2007-2025). CitiWatch cameras since 2005; Watch Center (RTCC-equivalent) ~2013-2014.",
-    },
-    "Detroit": {
-        "ori9": "MI8234900",
-        "rtcc_year": 2016,  # ✓ Project Green Light
-        "tier": "primary",
-        "state": "MI",
-        "notes": "5,691 SHR homicides (2007-2025). Project Green Light → RTCC.",
-    },
-    "Philadelphia": {
-        "ori9": "PAPEP0000",
-        "rtcc_year": 2012,  # ✓ Technical.ly, Inquirer, Atlas of Surveillance
-        "tier": "primary",
-        "state": "PA",
-        "notes": "6,521 SHR homicides (2007-2025). PPD RTCC launched early 2012.",
-    },
-    "Houston": {
-        "ori9": "TXHPD0000",
-        "rtcc_year": 2008,  # ✓ OJP — 4th US agency with RTCC
-        "tier": "primary",
-        "state": "TX",
-        "notes": "5,789 SHR homicides (2007-2025). Very early RTCC — only ~1yr pre-period in SHR.",
-    },
-    "Dallas": {
-        "ori9": "TXDPD0000",
-        "rtcc_year": 2019,  # ✓ Atlas of Surveillance, Motorola 2019
-        "tier": "primary",
-        "state": "TX",
-        "notes": "3,291 SHR homicides (2007-2025). DPD RTCC via Motorola partnership.",
-    },
-    "Denver": {
-        "ori9": "CODPD0000",
-        "rtcc_year": 2019,  # ✓ RTCIC opened August 2019
-        "tier": "primary",
-        "state": "CO",
-        "notes": "1,077 SHR homicides (2007-2025). HALO cameras since 2008; RTCIC (RTCC) opened August 2019.",
-    },
+    city: {
+        "ori9": meta["ori"],
+        "rtcc_year": meta["rtcc_year"],
+        "tier": meta.get("tier", "comparison"),
+        "state": meta.get("state"),
+        "notes": meta.get("notes", ""),
+    }
+    for city, meta in get_rtcc_city_metadata().items()
 }
 
 # ── Propensity Score Features ──────────────────────────────────

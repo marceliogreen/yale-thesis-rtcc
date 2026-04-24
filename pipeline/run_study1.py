@@ -24,8 +24,10 @@ from pathlib import Path
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
-PIPELINE_DIR = Path(__file__).parent
-sys.path.insert(0, str(PIPELINE_DIR))
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+project_root_str = str(PROJECT_ROOT)
+if project_root_str not in sys.path:
+    sys.path.insert(0, project_root_str)
 
 RESULTS_BASE = Path(__file__).parent.parent / "results" / "study1_rtcc"
 
@@ -35,7 +37,7 @@ def step_its():
     logger.info("=" * 50)
     logger.info("STEP 1: Bayesian ITS")
     logger.info("=" * 50)
-    from models.bayesian_its import run
+    from pipeline.models.bayesian_its import run
     run(str(RESULTS_BASE / "bayesian_its"))
 
 
@@ -44,7 +46,7 @@ def step_classifier():
     logger.info("=" * 50)
     logger.info("STEP 2: Classifier + SHAP")
     logger.info("=" * 50)
-    from run_classifier import run
+    from pipeline.run_classifier import run
     run(str(RESULTS_BASE))
 
 
@@ -53,7 +55,7 @@ def step_prophet():
     logger.info("=" * 50)
     logger.info("STEP 3: Prophet Counterfactual")
     logger.info("=" * 50)
-    from models.prophet_forecast import run
+    from pipeline.models.prophet_forecast import run
     run(str(RESULTS_BASE / "prophet"))
 
 
@@ -62,7 +64,7 @@ def step_monte_carlo():
     logger.info("=" * 50)
     logger.info("STEP 4: Monte Carlo Simulation")
     logger.info("=" * 50)
-    from models.monte_carlo import run
+    from pipeline.models.monte_carlo import run
     run(str(RESULTS_BASE / "monte_carlo"))
 
 

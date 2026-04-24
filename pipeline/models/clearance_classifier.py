@@ -10,32 +10,38 @@ CV: TimeSeriesSplit(n_splits=5) for temporal validation
 Author: Marcelo Green <marcelo.green@yale.edu>
 """
 
+import asyncio
 import json
 import logging
-from dataclasses import dataclass, asdict
+import sys
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+project_root_str = str(PROJECT_ROOT)
+if project_root_str not in sys.path:
+    sys.path.insert(0, project_root_str)
 
 import numpy as np
 import pandas as pd
 from dotenv import load_dotenv
 
 # ML imports
-from sklearn.model_selection import TimeSeriesSplit, cross_val_score, cross_validate
-from sklearn.preprocessing import StandardScaler, OneHotEncoder, TargetEncoder
+from sklearn.base import clone
+from sklearn.model_selection import TimeSeriesSplit, cross_validate
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
-from sklearn.metrics import roc_auc_score, precision_score, recall_score, f1_score, classification_report
+from sklearn.metrics import roc_auc_score, precision_score, recall_score, f1_score
 import xgboost as xgb
 import shap
 
-# Local imports
-import sys
-sys.path.insert(0, str(Path(__file__).parent.parent))
-from data.fbi_api_client import UnifiedCrimeDataClient
+from pipeline.config import CLASSIFIER_CONFIG
+from pipeline.data.fbi_api_client import UnifiedCrimeDataClient
 
 load_dotenv()
 
@@ -75,24 +81,9 @@ class RTCCClearanceClassifier:
 
     # Model configurations
     MODEL_CONFIGS = {
-        "xgboost": {
-            "n_estimators": 500,
-            "learning_rate": 0.05,
-            "max_depth": 6,
-            "random_state": 42,
-            "eval_metric": "logloss",
-        },
-        "random_forest": {
-            "n_estimators": 500,
-            "max_depth": 10,
-            "random_state": 42,
-            "class_weight": "balanced",
-        },
-        "logistic": {
-            "max_iter": 1000,
-            "class_weight": "balanced",
-            "random_state": 42,
-        },
+        "xgboost": dict(CLASSIFIER_CONFIG.xgb_params),
+        "random_forest": dict(CLASSIFIER_CONFIG.rf_params),
+        "logistic": dict(CLASSIFIER_CONFIG.logistic_params),
     }
 
     def __init__(
@@ -129,7 +120,6 @@ class RTCCClearanceClassifier:
         self.models = {}
         self.metrics = {}
         self.feature_columns = None
-        self.preprocessor = None
 
         # Track data availability
         self.missing_data_log = []
@@ -220,7 +210,7 @@ class RTCCClearanceClassifier:
         - homicide_count: int
         - population: int
         - region_encoded: OneHotEncoder (4 cols)
-        - state_fe: TargetEncoder
+        - state_fe: OneHotEncoder
 
         Args:
             df: Input dataframe with city, year, homicide_count, population, etc.
@@ -246,9 +236,8 @@ class RTCCClearanceClassifier:
         )
 
         # Define feature columns
-        numeric_features = ["years_since_rtcc", "homicide_count", "population"]
-        categorical_features = ["region"]
-        target_features = ["state_fe"]
+        numeric_features = ["post_rtcc", "years_since_rtcc", "homicide_count", "population"]
+        categorical_features = ["region", "state_fe"]
 
         # Handle missing features
         for feat in numeric_features:
@@ -256,10 +245,6 @@ class RTCCClearanceClassifier:
                 df[feat] = 0  # Default value
 
         for feat in categorical_features:
-            if feat not in df.columns:
-                df[feat] = "Unknown"
-
-        for feat in target_features:
             if feat not in df.columns:
                 df[feat] = "Unknown"
 
@@ -279,27 +264,45 @@ class RTCCClearanceClassifier:
         valid_mask = ~pd.isna(y)
         df = df[valid_mask]
         y = y[valid_mask]
-        X = df[numeric_features + categorical_features + target_features]
+        X = df[numeric_features + categorical_features]
 
         # Store feature columns
-        self.feature_columns = numeric_features + categorical_features + target_features
-
-        # Create preprocessor
-        preprocessor = ColumnTransformer(
-            transformers=[
-                ("num", StandardScaler(), numeric_features),
-                ("cat", OneHotEncoder(handle_unknown="ignore"), categorical_features),
-                ("target", TargetEncoder(target_type="binary"), target_features),
-            ],
-            remainder="drop",
-        )
-
-        self.preprocessor = preprocessor
+        self.feature_columns = numeric_features + categorical_features
 
         logger.info(f"Built feature matrix: X={X.shape}, y={y.shape}")
         logger.info(f"Positive class ratio: {y.mean():.2%}")
 
         return X, y
+
+    def _build_preprocessor(self) -> ColumnTransformer:
+        """Create the shared preprocessing pipeline."""
+        numeric_features = ["post_rtcc", "years_since_rtcc", "homicide_count", "population"]
+        categorical_features = ["region", "state_fe"]
+        return ColumnTransformer(
+            transformers=[
+                ("num", StandardScaler(), numeric_features),
+                ("cat", OneHotEncoder(handle_unknown="ignore"), categorical_features),
+            ],
+            remainder="drop",
+        )
+
+    def _make_model_pipeline(self, model_name: str) -> Pipeline:
+        """Create a full preprocessing + model pipeline."""
+        if model_name == "xgboost":
+            estimator = xgb.XGBClassifier(**self.MODEL_CONFIGS["xgboost"])
+        elif model_name == "random_forest":
+            estimator = RandomForestClassifier(**self.MODEL_CONFIGS["random_forest"])
+        elif model_name == "logistic":
+            estimator = LogisticRegression(**self.MODEL_CONFIGS["logistic"])
+        else:
+            raise ValueError(f"Unknown model: {model_name}")
+
+        return Pipeline(
+            steps=[
+                ("preprocessor", self._build_preprocessor()),
+                ("model", estimator),
+            ]
+        )
 
     def train_models(
         self,
@@ -323,64 +326,26 @@ class RTCCClearanceClassifier:
         """
         logger.info("Training models with TimeSeriesSplit CV")
 
-        # Preprocess features — convert to dense array
-        X_processed = self.preprocessor.fit_transform(X, y)
-        if hasattr(X_processed, "toarray"):
-            X_processed = X_processed.toarray().astype(np.float64)
-        else:
-            X_processed = np.array(X_processed, dtype=np.float64)
-
-        # Get feature names after preprocessing
-        feature_names = self._get_feature_names()
-
         # Time series split
-        tscv = TimeSeriesSplit(n_splits=5, test_size=max(1, int(len(y) * 0.2)))
-
-        # Train XGBoost
-        logger.info("Training XGBoost...")
-        self.models["xgboost"] = xgb.XGBClassifier(**self.MODEL_CONFIGS["xgboost"])
-
-        cv_results_xgb = cross_validate(
-            self.models["xgboost"],
-            X_processed,
-            y,
-            cv=tscv,
-            scoring="roc_auc",
-            return_estimator=True,
+        tscv = TimeSeriesSplit(
+            n_splits=min(CLASSIFIER_CONFIG.cv_folds, max(2, len(y) - 1)),
+            test_size=max(1, int(len(y) * 0.2)),
         )
 
-        # Fit on full data for final model
-        self.models["xgboost"].fit(X_processed, y)
-
-        # Train Random Forest
-        logger.info("Training Random Forest...")
-        self.models["random_forest"] = RandomForestClassifier(**self.MODEL_CONFIGS["random_forest"])
-
-        cv_results_rf = cross_validate(
-            self.models["random_forest"],
-            X_processed,
-            y,
-            cv=tscv,
-            scoring="roc_auc",
-            return_estimator=True,
-        )
-
-        self.models["random_forest"].fit(X_processed, y)
-
-        # Train Logistic Regression
-        logger.info("Training Logistic Regression...")
-        self.models["logistic"] = LogisticRegression(**self.MODEL_CONFIGS["logistic"])
-
-        cv_results_lr = cross_validate(
-            self.models["logistic"],
-            X_processed,
-            y,
-            cv=tscv,
-            scoring="roc_auc",
-            return_estimator=True,
-        )
-
-        self.models["logistic"].fit(X_processed, y)
+        cv_results = {}
+        for model_name in ("xgboost", "random_forest", "logistic"):
+            logger.info(f"Training {model_name}...")
+            pipeline = self._make_model_pipeline(model_name)
+            cv_results[model_name] = cross_validate(
+                pipeline,
+                X,
+                y,
+                cv=tscv,
+                scoring="roc_auc",
+                return_estimator=False,
+            )
+            pipeline.fit(X, y)
+            self.models[model_name] = pipeline
 
         # Store CV scores (handle NaN from failed folds)
         def safe_cv_stats(scores):
@@ -389,9 +354,8 @@ class RTCCClearanceClassifier:
                 return {"cv_scores": scores.tolist(), "mean_cv": float("nan")}
             return {"cv_scores": scores.tolist(), "mean_cv": float(valid.mean())}
 
-        self.metrics["xgboost"] = safe_cv_stats(cv_results_xgb["test_score"])
-        self.metrics["random_forest"] = safe_cv_stats(cv_results_rf["test_score"])
-        self.metrics["logistic"] = safe_cv_stats(cv_results_lr["test_score"])
+        for model_name, result in cv_results.items():
+            self.metrics[model_name] = safe_cv_stats(result["test_score"])
 
         logger.info("Model training complete")
         for model_name, metric in self.metrics.items():
@@ -399,28 +363,42 @@ class RTCCClearanceClassifier:
 
         return self.models
 
-    def _get_feature_names(self) -> List[str]:
+    def _get_feature_names(self, preprocessor: ColumnTransformer) -> List[str]:
         """Get feature names after preprocessing."""
-        if self.preprocessor is None:
-            return []
-
         feature_names = []
 
         # Numeric features (keep original names)
-        for name in self.preprocessor.transformers_[0][2]:
+        for name in preprocessor.transformers_[0][2]:
             feature_names.append(name)
 
         # Categorical features (OneHotEncoder)
-        ohe = self.preprocessor.named_transformers_["cat"]
+        ohe = preprocessor.named_transformers_["cat"]
         if hasattr(ohe, "get_feature_names_out"):
             for name in ohe.get_feature_names_out():
                 feature_names.append(name)
 
-        # Target encoded features
-        for name in self.preprocessor.transformers_[2][2]:
-            feature_names.append(f"{name}_te")
-
         return feature_names
+
+    def _cross_validated_predictions(
+        self,
+        pipeline: Pipeline,
+        X: pd.DataFrame,
+        y: np.ndarray,
+    ) -> Tuple[np.ndarray, np.ndarray]:
+        """Generate out-of-sample probabilities from TimeSeriesSplit."""
+        tscv = TimeSeriesSplit(
+            n_splits=min(CLASSIFIER_CONFIG.cv_folds, max(2, len(y) - 1)),
+            test_size=max(1, int(len(y) * 0.2)),
+        )
+        y_pred_proba = np.full(len(y), np.nan, dtype=np.float64)
+
+        for train_idx, test_idx in tscv.split(X):
+            fold_model = clone(pipeline)
+            fold_model.fit(X.iloc[train_idx], y[train_idx])
+            y_pred_proba[test_idx] = fold_model.predict_proba(X.iloc[test_idx])[:, 1]
+
+        valid_mask = ~np.isnan(y_pred_proba)
+        return y_pred_proba[valid_mask], y[valid_mask]
 
     def evaluate(self, X: pd.DataFrame, y: np.ndarray) -> Dict[str, ClearanceMetrics]:
         """
@@ -435,25 +413,22 @@ class RTCCClearanceClassifier:
         """
         logger.info("Evaluating models")
 
-        X_processed = self.preprocessor.transform(X)
-        if hasattr(X_processed, "toarray"):
-            X_processed = X_processed.toarray().astype(np.float64)
-        else:
-            X_processed = np.array(X_processed, dtype=np.float64)
         results = {}
 
-        for model_name, model in self.models.items():
-            # Predict
-            y_pred_proba = model.predict_proba(X_processed)[:, 1]
+        for model_name, pipeline in self.models.items():
+            y_pred_proba, y_valid = self._cross_validated_predictions(pipeline, X, y)
+            if len(y_valid) == 0:
+                logger.warning(f"{model_name}: no out-of-sample predictions available")
+                continue
             y_pred = (y_pred_proba >= 0.5).astype(int)
 
             # Calculate metrics
             metrics = ClearanceMetrics(
                 model_name=model_name,
-                auc_roc=roc_auc_score(y, y_pred_proba),
-                precision=precision_score(y, y_pred, zero_division=0),
-                recall=recall_score(y, y_pred, zero_division=0),
-                f1=f1_score(y, y_pred, zero_division=0),
+                auc_roc=roc_auc_score(y_valid, y_pred_proba),
+                precision=precision_score(y_valid, y_pred, zero_division=0),
+                recall=recall_score(y_valid, y_pred, zero_division=0),
+                f1=f1_score(y_valid, y_pred, zero_division=0),
                 cv_scores=self.metrics[model_name]["cv_scores"],
                 feature_importance=self._get_feature_importance(model_name),
             )
@@ -469,11 +444,13 @@ class RTCCClearanceClassifier:
 
     def _get_feature_importance(self, model_name: str) -> Dict[str, float]:
         """Get feature importance for a model."""
-        model = self.models.get(model_name)
-        if model is None:
+        pipeline = self.models.get(model_name)
+        if pipeline is None:
             return {}
 
-        feature_names = self._get_feature_names()
+        preprocessor = pipeline.named_steps["preprocessor"]
+        model = pipeline.named_steps["model"]
+        feature_names = self._get_feature_names(preprocessor)
         importance = {}
 
         if model_name == "xgboost":
@@ -511,23 +488,20 @@ class RTCCClearanceClassifier:
         """
         logger.info(f"Generating SHAP analysis for {model_name}")
 
-        model = self.models.get(model_name)
-        if model is None:
+        pipeline = self.models.get(model_name)
+        if pipeline is None:
             logger.error(f"Model {model_name} not found")
             return
 
-        X_processed = self.preprocessor.transform(X)
-        if hasattr(X_processed, "toarray"):
-            X_processed = X_processed.toarray().astype(np.float64)
-        else:
-            X_processed = np.array(X_processed, dtype=np.float64)
-        # Convert to dense float array if sparse
+        preprocessor = pipeline.named_steps["preprocessor"]
+        model = pipeline.named_steps["model"]
+        X_processed = preprocessor.transform(X)
         if hasattr(X_processed, "toarray"):
             X_processed_dense = X_processed.toarray().astype(np.float64)
         else:
             X_processed_dense = np.array(X_processed, dtype=np.float64)
 
-        feature_names = self._get_feature_names()
+        feature_names = self._get_feature_names(preprocessor)
 
         # Create SHAP explainer
         if model_name in ("xgboost", "random_forest"):
